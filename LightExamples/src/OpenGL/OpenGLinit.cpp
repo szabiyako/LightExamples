@@ -1,7 +1,7 @@
 #include "OpenGLinit.h"
 
 //Settings of Init
-const bool msaaEnable = true;
+const bool msaaEnable = false;
 const int msaaSamples = 4;
 
 //OpenGL settings setup
