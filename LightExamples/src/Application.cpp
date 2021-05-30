@@ -334,18 +334,6 @@ void Application::run()
 		memcpy(indicesSkybox, ind.data(), ind.size() * sizeof(unsigned int));
 	}
 
-
-	float positionsUI[] = {
-		-0.0035f, 0.0035f,
-		 0.0035f, 0.0035f,
-		-0.0035f,-0.0035f,
-		 0.0035f,-0.0035f
-	};
-	unsigned int indicesUI[] = {
-		2, 1, 0,
-		1, 2, 3
-	};
-
 	{ ///START SCOPE
 		Texture emptyText(155, 155, 155);
 		Texture skyboxTexture("res/textures/Skybox.png");
@@ -363,13 +351,6 @@ void Application::run()
 		IndexBuffer ib(indices, 36);//index buffer object
 		IndexBuffer ibSkybox(indicesSkybox, 36);//index buffer object
 
-		VertexArray vaUI;
-		VertexBuffer vbUI(positionsUI, 4 * 2 * sizeof(float));//coords buffer
-		IndexBuffer ibUI(indicesUI, 6);//index buffer object
-		VertexBufferLayout layoutUI;
-		layoutUI.Push<float>(2); // pos
-		vaUI.addBuffer(vbUI, layoutUI);
-		Shader shaderUI("res/shaders/UI.shader");
 		Shader shaderLight("res/shaders/LightSrc.shader");
 		Shader shaderSky("res/shaders/SkyBox.shader");
 
@@ -382,12 +363,6 @@ void Application::run()
 			Renderer::clear();
 
 			keysinput(m_window);
-
-			//UI
-			//shaderUI.bind();
-			//shaderUI.setUniformMatrix4f("u_Proj", m_Camera.getUImatrix());
-			//Renderer::draw(vaUI, ibUI, shaderUI);
-			//
 
 
 			//Skybox
