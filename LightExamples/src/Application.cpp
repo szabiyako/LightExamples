@@ -415,8 +415,11 @@ void Application::run()
 
 			Renderer::draw(m_ui);
 
-			if (m_enableVSync != m_lastEnableVSync)
+			if (m_enableVSync != m_lastEnableVSync) {
+				Console::print(std::string("VSync ") + (m_enableVSync ? "enabled\n" : "disabled\n" ));
 				glfwSwapInterval(m_enableVSync);
+			}
+			
 			m_lastEnableVSync = m_enableVSync;
 
 			/* Swap front and back buffers */
