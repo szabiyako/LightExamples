@@ -26,14 +26,14 @@ void UI::RenderingMenu::process(const int windowWidth, const int windowHeight, b
 	
 	ImGui::Text("Rendering type");
 	ImGui::SameLine();
-	if (ImGui::Button(renderType.c_str()))
+	if (ImGui::Button(getRenderTypeAsString(m_dataRef.renderingType).c_str()))
 		ImGui::OpenPopup("renderingTypePopup");
-	std::vector<std::string> renderTypes = { "Default", "Deferred", "Ray Tracing" };
+	std::vector<RenderingType> renderingTypes = { RenderingType::DEFAULT, RenderingType::DEFERRED, RenderingType::RAYTRACING };
 	if (ImGui::BeginPopup("renderingTypePopup"))
 	{
-		for (const std::string& name : renderTypes)
-			if (ImGui::Selectable(name.c_str()))
-				renderType = name;
+		for (const RenderingType& renderingType : renderingTypes)
+			if (ImGui::Selectable(getRenderTypeAsString(renderingType).c_str()))
+				m_dataRef.renderingType = renderingType;
 		ImGui::EndPopup();
 	}
 	ImGui::Text("Cube map");
@@ -42,4 +42,15 @@ void UI::RenderingMenu::process(const int windowWidth, const int windowHeight, b
 	ImGui::Text("FPS cup");
 
 	ImGui::End();
+}
+
+std::string UI::RenderingMenu::getRenderTypeAsString(const RenderingType& renderingType)
+{
+	switch (renderingType)
+	{
+	case RenderingType::DEFAULT: return "Default";
+	case RenderingType::DEFERRED: return "Deferred";
+	case RenderingType::RAYTRACING: return "Ray Tracing";
+	}
+	return "UNKNOWN";
 }

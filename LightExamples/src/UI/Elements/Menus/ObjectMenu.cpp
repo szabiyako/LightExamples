@@ -89,14 +89,28 @@ void UI::ObjectMenu::process(const int windowWidth, const int windowHeight, bool
 				ImGui::DragFloat("y##pos", &m_position.y, 0.05f);
 				ImGui::DragFloat("z##pos", &m_position.z, 0.05f);
 				ImGui::Text("Rotation");
-				ImGui::DragFloat("x##rot", &m_rotation.x, 0.05f);
-				ImGui::DragFloat("y##rot", &m_rotation.y, 0.05f);
-				ImGui::DragFloat("z##rot", &m_rotation.z, 0.05f);
+				ImGui::DragFloat("x##rot", &m_rotation.x, 0.5f);
+				ImGui::DragFloat("y##rot", &m_rotation.y, 0.5f);
+				ImGui::DragFloat("z##rot", &m_rotation.z, 0.5f);
 				ImGui::DragFloat("scale", &m_scale, 0.05f);
+				if (m_rotation.x > 180)
+					m_rotation.x -= 360;
+				else if (m_rotation.x < -180)
+					m_rotation.x += 360;
+
+				if (m_rotation.y > 180)
+					m_rotation.y -= 360;
+				else if (m_rotation.y < -180)
+					m_rotation.y += 360;
+
+				if (m_rotation.z > 180)
+					m_rotation.z -= 360;
+				else if (m_rotation.z < -180)
+					m_rotation.z += 360;
 				glm::mat4x4 modelMatrix = glm::scale(glm::mat4(1.f), glm::vec3(m_scale));
-				modelMatrix = glm::rotate(modelMatrix, m_rotation.x, glm::vec3(1.f, 0.f, 0.f));
-				modelMatrix = glm::rotate(modelMatrix, m_rotation.y, glm::vec3(0.f, 1.f, 0.f));
-				modelMatrix = glm::rotate(modelMatrix, m_rotation.z, glm::vec3(0.f, 0.f, 1.f));
+				modelMatrix = glm::rotate(modelMatrix, glm::radians(m_rotation.x), glm::vec3(1.f, 0.f, 0.f));
+				modelMatrix = glm::rotate(modelMatrix, glm::radians(m_rotation.y), glm::vec3(0.f, 1.f, 0.f));
+				modelMatrix = glm::rotate(modelMatrix, glm::radians(m_rotation.z), glm::vec3(0.f, 0.f, 1.f));
 				glm::mat4x4 undoRotated = glm::inverse(modelMatrix);
 				*m_modelMatrix = glm::translate(modelMatrix, glm::vec3(undoRotated * glm::vec4(m_position, 1.f)));
 				if (ImGui::Button("reset##transform")) {

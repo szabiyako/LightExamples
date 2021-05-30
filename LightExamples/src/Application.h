@@ -30,6 +30,8 @@
 
 #include "LoadableData/LoadableData.h"
 
+#include "RenderingType.h"
+
 class Application
 {
 	GLFWwindow *m_window = nullptr;
@@ -50,6 +52,7 @@ class Application
 	float m_cameraSpeed = 40.f;
 
 	// RenderingMenuData
+	RenderingType m_renderingType = RenderingType::DEFAULT;
 	unsigned int m_maxFPS = 0;
 	bool m_enableVSync = false;
 	bool m_lastEnableVSync = false;

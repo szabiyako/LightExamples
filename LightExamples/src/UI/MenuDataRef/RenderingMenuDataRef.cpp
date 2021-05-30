@@ -1,9 +1,11 @@
 #include "RenderingMenuDataRef.h"
 
 UI::RenderingMenuDataRef::RenderingMenuDataRef(
+	RenderingType& renderingType,
 	unsigned int& maxFPS,
 	bool& enableVSync)
-	: maxFPS(maxFPS),
+	: renderingType(renderingType),
+	  maxFPS(maxFPS),
 	  enableVSync(enableVSync)
 {
 }

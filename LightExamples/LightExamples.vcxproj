@@ -284,6 +284,7 @@
     <ClInclude Include="src\OpenGL\Texture.h" />
     <ClInclude Include="src\UI\UI.h" />
     <ClInclude Include="src\UI\Element.h" />
+    <ClInclude Include="src\RenderingType.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\textures\Dirt.png" />

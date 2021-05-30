@@ -293,7 +293,7 @@ Application::Application()
 	glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 	UI::DebugMenuDataRef debugMenuDataRef(m_enableFPScounter,m_enableCursor);
 	UI::CameraMenuDataRef cameraMenuDataRef(m_camera, m_cameraSpeed);
-	UI::RenderingMenuDataRef renderingMenuDataRef(m_maxFPS, m_enableVSync);
+	UI::RenderingMenuDataRef renderingMenuDataRef(m_renderingType, m_maxFPS, m_enableVSync);
 	UI::ObjectsMenuDataRef objectsMenuDataRef(m_loadableDataVector, m_drawableVector, m_modelMatrixVector);
 	UI::DataRef dataRef(
 		m_enableKeysInput,
@@ -339,8 +339,6 @@ void Application::run()
 		Texture skyboxTexture("res/textures/Skybox.png");
 
 		VertexArray va;
-		//VertexBuffer vb(positions, 8 * 5 * sizeof(float));//coords buffer
-		//VertexBuffer vb(positions, 36 * 8 * sizeof(float));//coords buffer
 		VertexBuffer vb(positions, 24 * 8 * sizeof(float));//coords buffer
 		VertexBufferLayout layout;
 		layout.Push<float>(3); // pos
@@ -356,30 +354,14 @@ void Application::run()
 
 		glm::mat4 oneM = glm::mat4(1.0f);
 
-		/* Loop until the user closes the window */
 		while (!glfwWindowShouldClose(m_window))
 		{
-			/* Render here */
 			Renderer::clear();
 
 			keysinput(m_window);
 
-
-			//Skybox
-			shaderSky.bind();
-			shaderSky.setUniformMatrix4f("u_Model", glm::scale(glm::translate(oneM, glm::vec3(m_camera.getPos().x, m_camera.getPos().y, m_camera.getPos().z)), glm::vec3(900.0f, 900.0f, 900.0f)));
-			shaderSky.setUniformMatrix4f("u_ViewProj", m_camera.getViewProj());
-			Renderer::draw(va, ibSkybox, shaderSky, skyboxTexture);
-			//
-
-			
-			//pipeline.setCullFace(Q_toggle);
-			//pipeline.setColor(glm::vec3(clear_color.x, clear_color.y, clear_color.z));
-
-			//Renderer::draw(drawable, pipeline, oneM, m_Camera.getView(), m_Camera.getProj());
-
-			for (size_t i = 0; i < m_drawableVector.size(); ++i)
-				Renderer::draw(m_drawableVector[i], m_modelMatrixVector[i], m_camera.getView(), m_camera.getProj());
+			/* Poll for and process events */
+			glfwPollEvents();
 
 			m_enableKeysInput = true;
 			m_ui->processStatic();
@@ -387,21 +369,27 @@ void Application::run()
 			if (showCursor) {
 				m_ui->process();
 			}
+			if (m_enableVSync != m_lastEnableVSync) {
+				Console::print(std::string("VSync ") + (m_enableVSync ? "enabled\n" : "disabled\n"));
+				glfwSwapInterval(m_enableVSync);
+			}
+			m_lastEnableVSync = m_enableVSync;
+
+			if (m_renderingType == RenderingType::DEFAULT) { // Ok for now
+				//Skybox
+				shaderSky.bind();
+				shaderSky.setUniformMatrix4f("u_Model", glm::scale(glm::translate(oneM, glm::vec3(m_camera.getPos().x, m_camera.getPos().y, m_camera.getPos().z)), glm::vec3(900.0f, 900.0f, 900.0f)));
+				shaderSky.setUniformMatrix4f("u_ViewProj", m_camera.getViewProj());
+				Renderer::draw(va, ibSkybox, shaderSky, skyboxTexture);
+				//
+
+				for (size_t i = 0; i < m_drawableVector.size(); ++i)
+					Renderer::draw(m_drawableVector[i], m_modelMatrixVector[i], m_camera.getView(), m_camera.getProj());
+			}
 
 			Renderer::draw(m_ui);
 
-			if (m_enableVSync != m_lastEnableVSync) {
-				Console::print(std::string("VSync ") + (m_enableVSync ? "enabled\n" : "disabled\n" ));
-				glfwSwapInterval(m_enableVSync);
-			}
-			
-			m_lastEnableVSync = m_enableVSync;
-
-			/* Swap front and back buffers */
 			glfwSwapBuffers(m_window);
-
-			/* Poll for and process events */
-			glfwPollEvents();
 
 			updateDeltaTime();
 		} ///End while
