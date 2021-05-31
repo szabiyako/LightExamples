@@ -24,7 +24,7 @@ public:
 	Indices indices;
 
 	void clear();
-	size_t getPolygonsCount();
+	size_t getPolygonsCount() const;
 };
 
 bool operator== (const ObjData& objLeft, const ObjData& objRight);

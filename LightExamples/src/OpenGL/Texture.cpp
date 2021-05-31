@@ -1,18 +1,21 @@
 #include "Texture.h"
 
-#define STB_IMAGE_IMPLEMENTATION
-#include "stb/stb_image.h"
+#include "LoadableData/Image/Image.h"
+#include "LoadableData/Image/Tools/Import/Import.h"
 
 #include <GL/glew.h>
 #include "ErrorHandler.h"
 
 Texture::Texture(const std::string & filepath)
-	: m_id(0), m_filePath(filepath), m_localBuffer(nullptr),
-	  m_width(0), m_height(0), m_bitsPerPixel(0)
+	: m_id(0), m_filePath(filepath), //m_localBuffer(nullptr),
+	  m_width(0), m_height(0)//, m_bitsPerPixel(0)
 {
-	stbi_set_flip_vertically_on_load(true);
-	m_localBuffer = stbi_load(filepath.c_str(), &m_width, &m_height, &m_bitsPerPixel, 4);
-	ASSERT(m_localBuffer);
+	Image image;
+	std::string errorMessage;
+	ImageTools::Import::fromFile(image, m_filePath, errorMessage);
+	ASSERT(!image.isEmpty());
+	m_width = image.width;
+	m_height = image.height;
 
 	glGenTextures(1, &m_id);
 	glBindTexture(GL_TEXTURE_2D, m_id);
@@ -41,19 +44,16 @@ Texture::Texture(const std::string & filepath)
 
 	//                               | Type output                   | Type input   | Data size per channel
 	//                          | level of detail 0 - max       | pixels in Border
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, m_width, m_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, m_localBuffer);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, m_width, m_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, image.data.data());
 	glGenerateMipmap(GL_TEXTURE_2D);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 
 	glBindTexture(GL_TEXTURE_2D, 0);
-
-	if (m_localBuffer)
-		stbi_image_free(m_localBuffer);
 }
 
 //OnecoloredTexture
 Texture::Texture(const unsigned char& r /*= 255*/, const unsigned char& g /*= 255*/, const unsigned char& b /*= 255*/)
-	: m_id(0), m_filePath("None"), m_localBuffer(nullptr), m_width(1), m_height(1), m_bitsPerPixel(8)
+	: m_id(0), m_filePath("None"), /*m_localBuffer(nullptr),*/ m_width(1), m_height(1)//, m_bitsPerPixel(8)
 {
 	unsigned char tmp[4] = { r, g, b, 255 };
 

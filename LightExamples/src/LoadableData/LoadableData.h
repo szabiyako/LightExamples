@@ -5,6 +5,7 @@
 struct LoadableData
 {
 	ObjData objData;
+	
 
 	LoadableData();
 	LoadableData(const ObjData &objData);

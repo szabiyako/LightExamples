@@ -23,7 +23,7 @@ void ObjData::clear()
 	indices.uv.clear();
 }
 
-size_t ObjData::getPolygonsCount()
+size_t ObjData::getPolygonsCount() const
 {
 	if (indices.polygonsStarts.empty())
 		return 0;

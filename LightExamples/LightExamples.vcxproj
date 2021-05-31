@@ -163,6 +163,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\LoadableData\Image\Image.cpp" />
+    <ClCompile Include="src\LoadableData\Image\Tools\Export\Export.cpp" />
+    <ClCompile Include="src\LoadableData\Image\Tools\Import\Import.cpp" />
     <ClCompile Include="src\UI\MenuDataRef\DebugMenuDataRef.cpp" />
     <ClCompile Include="src\UI\MenuDataRef\ObjectsMenuDataRef.cpp" />
     <ClCompile Include="src\UI\MenuDataRef\RenderingMenuDataRef.cpp" />
@@ -226,6 +229,9 @@
     <None Include="res\shaders\UI.shader" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\LoadableData\Image\Image.h" />
+    <ClInclude Include="src\LoadableData\Image\Tools\Export\Export.h" />
+    <ClInclude Include="src\LoadableData\Image\Tools\Import\Import.h" />
     <ClInclude Include="src\UI\MenuDataRef\DebugMenuDataRef.h" />
     <ClInclude Include="src\UI\MenuDataRef\ObjectsMenuDataRef.h" />
     <ClInclude Include="src\UI\MenuDataRef\RenderingMenuDataRef.h" />

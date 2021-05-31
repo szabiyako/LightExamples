@@ -12,10 +12,10 @@ class Texture : public NonCopyable
 private:
 	unsigned int m_id;
 	std::string m_filePath;
-	unsigned char *m_localBuffer;
+	//unsigned char *m_localBuffer;
 	int m_width;
 	int m_height;
-	int m_bitsPerPixel; //bits per pixel
+	//int m_bitsPerPixel; //bits per pixel
 public:
 	Texture(const std::string& filepath);
 
