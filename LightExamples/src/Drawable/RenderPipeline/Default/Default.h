@@ -5,10 +5,10 @@
 #include "OpenGL/Shader.h"
 
 namespace RenderPipeline {
-class BasicRenderPipeline : public RenderPipeline
+class Default : public RenderPipeline
 {
 public:
-	BasicRenderPipeline();
+	Default();
 	void draw(
 		const DrawableData::DrawableData& drawableData,
 		const glm::mat4x4& modelMatrix,

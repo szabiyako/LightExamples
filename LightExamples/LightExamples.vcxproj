@@ -183,8 +183,8 @@
     <ClCompile Include="src\UI\Elements\Utils\FPSCounter.cpp" />
     <ClCompile Include="src\LogWriter\LogWriter.cpp" />
     <ClCompile Include="src\Dependencies\imguiFileDialog\ImGuiFileDialog.cpp" />
-    <ClCompile Include="src\Drawable\DrawableData\Geometry\Geometry.cpp" />
-    <ClCompile Include="src\Drawable\RenderPipeline\Basic\BasicRenderPipeline.cpp" />
+    <ClCompile Include="src\Drawable\DrawableData\Default\Default.cpp" />
+    <ClCompile Include="src\Drawable\RenderPipeline\Default\Default.cpp" />
     <ClCompile Include="src\OpenGL\ErrorHandler.cpp" />
     <ClCompile Include="src\Drawable\RenderPipeline\RenderPipeline.cpp" />
     <ClCompile Include="src\Utils\MemoryMetric\MemoryMetric.cpp" />
@@ -246,8 +246,8 @@
     <ClInclude Include="src\UI\Elements\Utils\FPSCounter.h" />
     <ClInclude Include="src\LogWriter\LogWriter.h" />
     <ClInclude Include="src\Dependencies\imguiFileDialog\ImGuiFileDialog.h" />
-    <ClInclude Include="src\Drawable\DrawableData\Geometry\Geometry.h" />
-    <ClInclude Include="src\Drawable\RenderPipeline\Basic\BasicRenderPipeline.h" />
+    <ClInclude Include="src\Drawable\DrawableData\Default\Default.h" />
+    <ClInclude Include="src\Drawable\RenderPipeline\Default\Default.h" />
     <ClInclude Include="src\OpenGL\ErrorHandler.h" />
     <ClInclude Include="src\Utils\Assert.h" />
     <ClInclude Include="src\Drawable\RenderPipeline\RenderPipeline.h" />

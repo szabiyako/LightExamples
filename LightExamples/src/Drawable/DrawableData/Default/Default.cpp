@@ -1,4 +1,4 @@
-#include "Geometry.h"
+#include "Default.h"
 
 using namespace DrawableData;
 
@@ -77,12 +77,12 @@ std::vector<float> packTriangleVertexCoords(const std::vector<glm::vec3>& vertic
 
 #include <array>
 
-Geometry::Geometry(const ObjData& objData)
+Default::Default(const ObjData& objData)
 {
     loadFromObjData(objData);
 }
 
-void Geometry::loadFromObjData(const ObjData& objData)
+void Default::loadFromObjData(const ObjData& objData)
 {
     const std::vector<int> triangleVertexIndices = buildTriangleVertexIndices(objData.indices.polygons, objData.indices.polygonsStarts);
     const std::vector<float> triangleVertexCoords = packTriangleVertexCoords(objData.data.vertices, triangleVertexIndices);
@@ -123,7 +123,7 @@ void Geometry::loadFromObjData(const ObjData& objData)
     m_indexBuffer.create(indices.data(), nVertices);
 }
 
-Geometry::~Geometry()
+Default::~Default()
 {
 }
 

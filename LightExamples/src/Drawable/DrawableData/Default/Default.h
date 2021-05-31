@@ -8,18 +8,19 @@
 
 //TMP
 #include "LoadableData/ObjData/ObjData.h"
+#include "Utils/NonCopyable.h"
 
 namespace DrawableData {
-class Geometry : public DrawableData
+class Default : public DrawableData, public NonCopyable
 {
 public:
 	VertexArray m_vertexArray;
 	VertexBuffer m_vertexBuffer;
 	IndexBuffer m_indexBuffer;
 
-	Geometry(const ObjData& objData);
+	Default(const ObjData& objData);
 	void loadFromObjData(const ObjData& objData);
-	~Geometry();
+	~Default();
 };
 }
 

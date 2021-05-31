@@ -2,8 +2,8 @@
 
 #include "LoadableData/ObjData/Tools/Import.h"
 #include "Utils/Console.h"
-#include "Drawable/DrawableData/Geometry/Geometry.h"
-#include "Drawable/RenderPipeline/Basic/BasicRenderPipeline.h"
+#include "Drawable/DrawableData/Default/Default.h"
+#include "Drawable/RenderPipeline/Default/Default.h"
 
 #include "glm/gtc/matrix_transform.hpp"
 
@@ -71,15 +71,15 @@ void UI::ObjectMenu::process(const int windowWidth, const int windowHeight, bool
 	}
 
 	if (canBeDrawn) {
-		RenderPipeline::BasicRenderPipeline* base = dynamic_cast<RenderPipeline::BasicRenderPipeline*>(m_drawable->renderPipeline);
-		if (base != nullptr) {
+		RenderPipeline::Default* defaultPipeline = dynamic_cast<RenderPipeline::Default*>(m_drawable->renderPipeline);
+		if (defaultPipeline != nullptr) {
 			if (ImGui::CollapsingHeader("Draw"))
 			{
 				ImGui::Checkbox("Visible", &m_isVisible);
 				ImGui::Checkbox("Cull faces", &m_cullFaces);
 				ImGui::ColorEdit3("Color", m_color);
-				base->setCullFace(m_cullFaces);
-				base->setColor(glm::vec3(m_color[0], m_color[1], m_color[2]));
+				defaultPipeline->setCullFace(m_cullFaces);
+				defaultPipeline->setColor(glm::vec3(m_color[0], m_color[1], m_color[2]));
 				m_drawable->setVisible(m_isVisible);
 			}
 			if (ImGui::CollapsingHeader("Transform"))
@@ -143,14 +143,14 @@ void UI::ObjectMenu::process(const int windowWidth, const int windowHeight, bool
 				if (m_name == "New object")
 					m_name = fileName;
 				m_loadableData->objData = objData;
-				DrawableData::Geometry *geom = new DrawableData::Geometry(objData);
+				DrawableData::Default *defaultData = new DrawableData::Default(objData);
 				if (m_drawable->drawableData != nullptr)
 					delete m_drawable->drawableData;
-				m_drawable->drawableData = geom;
-				RenderPipeline::BasicRenderPipeline* base = new RenderPipeline::BasicRenderPipeline();
+				m_drawable->drawableData = defaultData;
+				RenderPipeline::Default* defaultPipeline = new RenderPipeline::Default();
 				if (m_drawable->renderPipeline != nullptr)
 					delete m_drawable->renderPipeline;
-				m_drawable->renderPipeline = base;
+				m_drawable->renderPipeline = defaultPipeline;
 			}
 		}
 		// close
