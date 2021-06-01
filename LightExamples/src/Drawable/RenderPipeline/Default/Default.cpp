@@ -23,7 +23,7 @@ void Default::draw(
 {
 	DrawableData::DrawableData& drawData = const_cast<DrawableData::DrawableData&>(drawableData);
 	DrawableData::Default* defaultData = dynamic_cast<DrawableData::Default*>(&drawData);
-	ASSERT(defaultData != nullptr) // DrawableData is not Default type
+	ASSERT(defaultData != nullptr); // DrawableData is not Default type
 
 	m_shader.bind();
 	glm::mat4x4 normalModelMatrix = modelMatrix;

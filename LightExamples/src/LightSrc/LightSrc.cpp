@@ -5,8 +5,11 @@
 
 #include "Utils/Console.h"
 
+//Render types
 #include "Drawable/DrawableData/Default/Default.h"
 #include "Drawable/RenderPipeline/Default/Default.h"
+
+#include "glm/gtc/matrix_transform.hpp"
 
 LightSrc::LightSrc()
 {
@@ -28,10 +31,19 @@ LightSrc::LightSrc()
 
 LightSrc::~LightSrc()
 {
+}
+
+void LightSrc::deleteDrawable()
+{
 	if (m_drawable.drawableData != nullptr)
 		delete m_drawable.drawableData;
 	if (m_drawable.renderPipeline != nullptr)
 		delete m_drawable.renderPipeline;
+}
+
+Drawable LightSrc::getDrawable() const
+{
+	return m_drawable;
 }
 
 void LightSrc::setType(const Type& type)
@@ -62,4 +74,88 @@ bool LightSrc::isEnabled() const
 bool LightSrc::isShadowsEnabled() const
 {
 	return m_isShadowsEnabled;
+}
+
+glm::mat4x4 LightSrc::getModelMatrix() const
+{
+	return m_modelMatrix;
+}
+
+bool& LightSrc::getEnabledRef()
+{
+	return m_isEnabled;
+}
+
+bool& LightSrc::getShadowsEnabledRef()
+{
+	return m_isShadowsEnabled;
+}
+
+glm::vec3& LightSrc::getPosRef()
+{
+	return m_position;
+}
+
+glm::vec3& LightSrc::getRotationRef()
+{
+	return m_rotation;
+}
+
+float& LightSrc::getScaleRef()
+{
+	return m_scale;
+}
+
+void LightSrc::updateModelMatrix()
+{
+	glm::mat4x4 modelMatrix = glm::scale(glm::mat4(1.f), glm::vec3(m_scale));
+	modelMatrix = glm::rotate(modelMatrix, glm::radians(m_rotation.x), glm::vec3(1.f, 0.f, 0.f));
+	modelMatrix = glm::rotate(modelMatrix, glm::radians(m_rotation.y), glm::vec3(0.f, 1.f, 0.f));
+	modelMatrix = glm::rotate(modelMatrix, glm::radians(m_rotation.z), glm::vec3(0.f, 0.f, 1.f));
+	glm::mat4x4 undoRotated = glm::inverse(modelMatrix);
+	m_modelMatrix = glm::translate(modelMatrix, glm::vec3(undoRotated * glm::vec4(m_position, 1.f)));
+}
+
+void LightSrc::updateDirection()
+{
+	glm::mat4x4 modelMatrix = glm::mat4(1.f);
+	modelMatrix = glm::rotate(modelMatrix, glm::radians(m_rotation.x), glm::vec3(1.f, 0.f, 0.f));
+	modelMatrix = glm::rotate(modelMatrix, glm::radians(m_rotation.y), glm::vec3(0.f, 1.f, 0.f));
+	modelMatrix = glm::rotate(modelMatrix, glm::radians(m_rotation.z), glm::vec3(0.f, 0.f, 1.f));
+	m_dir = modelMatrix * glm::vec4(m_dir, 0.f);
+}
+
+glm::vec3 LightSrc::getPos() const
+{
+	return m_position;
+}
+
+glm::vec3 LightSrc::getDir() const
+{
+	return m_dir;
+}
+
+glm::vec3 LightSrc::getColor() const
+{
+	return m_color;
+}
+
+void LightSrc::setColor(const glm::vec3& color)
+{
+	if (m_color == color)
+		return;
+	m_color = color;
+	RenderPipeline::Default* defaultPipeline = dynamic_cast<RenderPipeline::Default*>(m_drawable.renderPipeline);
+	ASSERT(defaultPipeline != nullptr); // RenderPipeline is not Default type
+	defaultPipeline->setColor(m_color);
+}
+
+bool LightSrc::isVisible() const
+{
+	return m_drawable.isVisible();
+}
+
+void LightSrc::setVisible(const bool value)
+{
+	m_drawable.setVisible(value);
 }

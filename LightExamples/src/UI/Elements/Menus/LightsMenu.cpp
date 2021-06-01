@@ -23,13 +23,11 @@ void UI::LightsMenu::process(const int windowWidth, const int windowHeight, bool
 	for (size_t objIndex = 0; objIndex < nObjects; ++objIndex) {
 		// send ref to data
 		bool isOpen = m_showObjectMenu[objIndex];
-		Drawable* drawable = &m_dataRef.drawableVector[objIndex];
-		glm::mat4x4* modelMatrix = &m_dataRef.modelMatrixVector[objIndex];
+		LightSrc *lightSrc = &m_dataRef.lightSources[objIndex];
 
 		m_lightMenus[objIndex].setDataPtrs(
 			&isOpen,
-			drawable,
-			modelMatrix);
+			lightSrc);
 		m_lightMenus[objIndex].process(windowWidth, windowHeight, enableKeysInput);
 		m_showObjectMenu[objIndex] = isOpen;
 	}
@@ -42,8 +40,7 @@ void UI::LightsMenu::process(const int windowWidth, const int windowHeight, bool
 	ImGui::Begin("Lights menu", &m_isOpen, m_windowFlags);
 	if (ImGui::Button("Add Object")) {
 		m_showObjectMenu.push_back(false);
-		m_dataRef.modelMatrixVector.push_back(glm::mat4(1.f));
-		m_dataRef.drawableVector.push_back(Drawable());
+		m_dataRef.lightSources.push_back(LightSrc());
 		if (nObjects != 0) {
 			ImVec2 newPos = m_lightMenus[nObjects - 1].getWindowPos();
 			newPos.x += 195;
@@ -66,10 +63,8 @@ void UI::LightsMenu::process(const int windowWidth, const int windowHeight, bool
 	if (indexToDelete != -1) {
 		m_showObjectMenu.erase(m_showObjectMenu.begin() + indexToDelete);
 		m_lightMenus.erase(m_lightMenus.begin() + indexToDelete);
-		m_dataRef.modelMatrixVector.erase(m_dataRef.modelMatrixVector.begin() + indexToDelete);
-		delete m_dataRef.drawableVector[indexToDelete].drawableData;
-		delete m_dataRef.drawableVector[indexToDelete].renderPipeline;
-		m_dataRef.drawableVector.erase(m_dataRef.drawableVector.begin() + indexToDelete);
+		m_dataRef.lightSources[indexToDelete].deleteDrawable();
+		m_dataRef.lightSources.erase(m_dataRef.lightSources.begin() + indexToDelete);
 	}
 
 	ImGui::End();

@@ -295,7 +295,7 @@ Application::Application()
 	UI::CameraMenuDataRef cameraMenuDataRef(m_camera, m_cameraSpeed);
 	UI::RenderingMenuDataRef renderingMenuDataRef(m_renderingType, m_maxFPS, m_enableVSync);
 	UI::ObjectsMenuDataRef objectsMenuDataRef(m_loadableDataVector, m_drawableVector, m_modelMatrixVector);
-	UI::LightsMenuDataRef lightsMenuDataRef(m_drawableLightVector, m_lightModelMatrixVector);
+	UI::LightsMenuDataRef lightsMenuDataRef(m_lightSources);
 	UI::DataRef dataRef(
 		m_enableKeysInput,
 		debugMenuDataRef,
@@ -319,14 +319,11 @@ Application::~Application()
 			delete m_drawableVector[objIndex].renderPipeline;
 	}
 	m_drawableVector.clear();
-	const size_t nLights = m_drawableLightVector.size();
+	const size_t nLights = m_lightSources.size();
 	for (size_t lightIndex = 0; lightIndex < nLights; ++lightIndex) {
-		if (m_drawableLightVector[lightIndex].drawableData != nullptr)
-			delete m_drawableLightVector[lightIndex].drawableData;
-		if (m_drawableLightVector[lightIndex].renderPipeline != nullptr)
-			delete m_drawableLightVector[lightIndex].renderPipeline;
+		m_lightSources[lightIndex].deleteDrawable();
 	}
-	m_drawableLightVector.clear();
+	m_lightSources.clear();
 	glfwTerminate();
 }
 
@@ -402,8 +399,8 @@ void Application::run()
 				for (size_t i = 0; i < m_drawableVector.size(); ++i)
 					Renderer::draw(m_drawableVector[i], m_modelMatrixVector[i], m_camera.getView(), m_camera.getProj());
 
-				for (size_t i = 0; i < m_drawableLightVector.size(); ++i)
-					Renderer::draw(m_drawableLightVector[i], m_lightModelMatrixVector[i], m_camera.getView(), m_camera.getProj());
+				for (size_t i = 0; i < m_lightSources.size(); ++i)
+					Renderer::draw(m_lightSources[i].getDrawable(), m_lightSources[i].getModelMatrix(), m_camera.getView(), m_camera.getProj());
 			}
 
 			Renderer::draw(m_ui);

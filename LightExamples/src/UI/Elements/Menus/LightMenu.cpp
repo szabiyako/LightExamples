@@ -41,7 +41,7 @@ void UI::LightMenu::process(const int windowWidth, const int windowHeight, bool&
 
 	std::string loadObjectLabel = m_fileName;
 
-	const bool canBeDrawn = m_drawable->canBeDrawn();
+	const bool canBeDrawn = m_lightSrc->getDrawable().canBeDrawn();
 	if (!canBeDrawn)
 		loadObjectLabel = "Select";
 	ImGui::Text("Name");
@@ -63,75 +63,56 @@ void UI::LightMenu::process(const int windowWidth, const int windowHeight, bool&
 		//ImGui::SetNextWindowPos(ImVec2(m_windowPos.x + 40, m_windowPos.y + 70), ImGuiCond_Always);
 		//ImGui::SetNextWindowSize(ImVec2(400, 400), ImGuiCond_Always);
 		//ImGuiFileDialog::Instance()->OpenDialog(m_uniqueName, "Choose File", ".obj", ".");
-		ObjData objData;
-		std::string errorMessage;
-		ObjDataTools::Import::fromFile(objData, errorMessage, "D:/Git/QtProjects/cube.obj");
-		const bool isLoaded = errorMessage.empty();
-		if (!isLoaded) {
-			Console::print("Failed to load \"Cube\"" + errorMessage + '\n');
-		}
-		else {
-			Console::print("Loaded \"Cube\"\n");
-		}
-		DrawableData::Default* defaultData = new DrawableData::Default(objData);
-		if (m_drawable->drawableData != nullptr)
-			delete m_drawable->drawableData;
-		m_drawable->drawableData = defaultData;
-		RenderPipeline::Default* defaultPipeline = new RenderPipeline::Default();
-		if (m_drawable->renderPipeline != nullptr)
-			delete m_drawable->renderPipeline;
-		m_drawable->renderPipeline = defaultPipeline;
 	}
 
 	if (canBeDrawn) {
-		RenderPipeline::Default* defaultPipeline = dynamic_cast<RenderPipeline::Default*>(m_drawable->renderPipeline);
-		if (defaultPipeline != nullptr) {
-			if (ImGui::CollapsingHeader("Draw"))
-			{
-				ImGui::Checkbox("Visible", &m_isVisible);
-				ImGui::Checkbox("Cull faces", &m_cullFaces);
-				ImGui::ColorEdit3("Color", m_color);
-				defaultPipeline->setCullFace(m_cullFaces);
-				defaultPipeline->setColor(glm::vec3(m_color[0], m_color[1], m_color[2]));
-				m_drawable->setVisible(m_isVisible);
-			}
-			if (ImGui::CollapsingHeader("Transform"))
-			{
-				ImGui::Text("Position");
-				ImGui::DragFloat("x##pos", &m_position.x, 0.05f);
-				ImGui::DragFloat("y##pos", &m_position.y, 0.05f);
-				ImGui::DragFloat("z##pos", &m_position.z, 0.05f);
-				ImGui::Text("Rotation");
-				ImGui::DragFloat("x##rot", &m_rotation.x, 0.5f);
-				ImGui::DragFloat("y##rot", &m_rotation.y, 0.5f);
-				ImGui::DragFloat("z##rot", &m_rotation.z, 0.5f);
-				ImGui::DragFloat("scale", &m_scale, 0.05f);
-				if (m_rotation.x > 180)
-					m_rotation.x -= 360;
-				else if (m_rotation.x < -180)
-					m_rotation.x += 360;
+		if (ImGui::CollapsingHeader("Draw"))
+		{
+			bool isVisible = m_lightSrc->isVisible();
+			ImGui::Checkbox("Visible", &isVisible);
+			const glm::vec3 currentColor = m_lightSrc->getColor();
+			float color[3] = { currentColor.x, currentColor.y, currentColor.z };
+			ImGui::ColorEdit3("Color", color);
 
-				if (m_rotation.y > 180)
-					m_rotation.y -= 360;
-				else if (m_rotation.y < -180)
-					m_rotation.y += 360;
+			m_lightSrc->setVisible(isVisible);
+			m_lightSrc->setColor(glm::vec3(color[0], color[1], color[2]));
 
-				if (m_rotation.z > 180)
-					m_rotation.z -= 360;
-				else if (m_rotation.z < -180)
-					m_rotation.z += 360;
-				glm::mat4x4 modelMatrix = glm::scale(glm::mat4(1.f), glm::vec3(m_scale));
-				modelMatrix = glm::rotate(modelMatrix, glm::radians(m_rotation.x), glm::vec3(1.f, 0.f, 0.f));
-				modelMatrix = glm::rotate(modelMatrix, glm::radians(m_rotation.y), glm::vec3(0.f, 1.f, 0.f));
-				modelMatrix = glm::rotate(modelMatrix, glm::radians(m_rotation.z), glm::vec3(0.f, 0.f, 1.f));
-				glm::mat4x4 undoRotated = glm::inverse(modelMatrix);
-				*m_modelMatrix = glm::translate(modelMatrix, glm::vec3(undoRotated * glm::vec4(m_position, 1.f)));
-				if (ImGui::Button("reset##transform")) {
-					m_position = { 0.f, 0.f, 0.f };
-					m_rotation = { 0.f, 0.f, 0.f };
-					m_scale = 1.f;
-				}
+		}
+		if (ImGui::CollapsingHeader("Transform"))
+		{
+			ImGui::Text("Position");
+			glm::vec3 &position = m_lightSrc->getPosRef();
+			ImGui::DragFloat("x##pos", &position.x, 0.05f);
+			ImGui::DragFloat("y##pos", &position.y, 0.05f);
+			ImGui::DragFloat("z##pos", &position.z, 0.05f);
+			glm::vec3 &rotations = m_lightSrc->getRotationRef();
+			ImGui::Text("Rotation");
+			ImGui::DragFloat("x##rot", &rotations.x, 0.5f);
+			ImGui::DragFloat("y##rot", &rotations.y, 0.5f);
+			ImGui::DragFloat("z##rot", &rotations.z, 0.5f);
+			float &scale = m_lightSrc->getScaleRef();
+			ImGui::DragFloat("scale", &scale, 0.05f);
+			if (rotations.x > 180)
+				rotations.x -= 360;
+			else if (rotations.x < -180)
+				rotations.x += 360;
+		
+			if (rotations.y > 180)
+				rotations.y -= 360;
+			else if (rotations.y < -180)
+				rotations.y += 360;
+		
+			if (rotations.z > 180)
+				rotations.z -= 360;
+			else if (rotations.z < -180)
+				rotations.z += 360;
+			if (ImGui::Button("reset##transform")) {
+				position = { 0.f, 0.f, 0.f };
+				rotations = { 0.f, 0.f, 0.f };
+				scale = 1.f;
 			}
+			m_lightSrc->updateModelMatrix();
+			m_lightSrc->updateDirection();
 		}
 	}
 	ImGui::End();
@@ -139,19 +120,16 @@ void UI::LightMenu::process(const int windowWidth, const int windowHeight, bool&
 
 void UI::LightMenu::setDataPtrs(
 	bool* isOpen,
-	Drawable* drawable,
-	glm::mat4x4* modelMatrix)
+	LightSrc* lightSrc)
 {
 	m_isOpen = isOpen;
-	m_drawable = drawable;
-	m_modelMatrix = modelMatrix;
+	m_lightSrc = lightSrc;
 }
 
 bool UI::LightMenu::isDataPtrsSetup() const
 {
 	return (m_isOpen != nullptr)
-		&& (m_drawable != nullptr)
-		&& (m_modelMatrix != nullptr);
+		&& (m_lightSrc != nullptr);
 }
 
 std::string UI::LightMenu::getUniqueName() const

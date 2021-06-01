@@ -163,6 +163,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\Model\Model.cpp" />
     <ClCompile Include="src\LightSrc\LightSrc.cpp" />
     <ClCompile Include="src\UI\Elements\Menus\LightMenu.cpp" />
     <ClCompile Include="src\UI\MenuDataRef\LightsMenuDataRef.cpp" />
@@ -233,6 +234,7 @@
     <None Include="res\shaders\UI.shader" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Model\Model.h" />
     <ClInclude Include="src\LightSrc\LightSrc.h" />
     <ClInclude Include="src\UI\Elements\Menus\LightMenu.h" />
     <ClInclude Include="src\UI\MenuDataRef\LightsMenuDataRef.h" />

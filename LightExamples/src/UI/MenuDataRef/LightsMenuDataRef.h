@@ -1,18 +1,15 @@
 #pragma once
 
-#include "LoadableData/LoadableData.h"
-#include "Drawable/Drawable.h"
+#include "LightSrc/LightSrc.h"
 #include "glm/glm.hpp"
 #include <vector>
 
 namespace UI {
 struct LightsMenuDataRef
 {
-	std::vector<Drawable> &drawableVector;
-	std::vector<glm::mat4x4> &modelMatrixVector;
+	std::vector<LightSrc> &lightSources;
 
 	LightsMenuDataRef(
-		std::vector<Drawable> &drawableVector,
-		std::vector<glm::mat4x4> &modelMatrixVector);
+		std::vector<LightSrc> &lightSources);
 };
 }

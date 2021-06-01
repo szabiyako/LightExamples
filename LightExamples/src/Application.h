@@ -32,6 +32,8 @@
 
 #include "RenderingType.h"
 
+#include "LightSrc/LightSrc.h"
+
 class Application
 {
 	GLFWwindow *m_window = nullptr;
@@ -63,13 +65,9 @@ class Application
 	std::vector<glm::mat4x4> m_modelMatrixVector;
 
 	// LightsMenuData
-	std::vector<Drawable> m_drawableLightVector;
-	std::vector<glm::mat4x4> m_lightModelMatrixVector;
-	//needs a Light type
-	std::vector<bool> m_lightEnable;
-	std::vector<glm::vec3> m_lightPos;
-	std::vector<glm::vec3> m_lightDir;
-	std::vector<bool> m_lightEnableShadows;
+	std::vector<LightSrc> m_lightSources;
+	//std::vector<Drawable> m_drawableLightVector;
+	//std::vector<glm::mat4x4> m_lightModelMatrixVector;
 
 
 	bool showCursor = false;
