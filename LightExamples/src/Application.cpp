@@ -310,9 +310,23 @@ Application::Application()
 Application::~Application()
 {
 	delete m_ui;
-	const size_t nObjects = m_loadableDataVector.size();
 	m_loadableDataVector.clear();
+	const size_t nObjects = m_drawableVector.size();
+	for (size_t objIndex = 0; objIndex < nObjects; ++objIndex) {
+		if (m_drawableVector[objIndex].drawableData != nullptr)
+			delete m_drawableVector[objIndex].drawableData;
+		if (m_drawableVector[objIndex].renderPipeline != nullptr)
+			delete m_drawableVector[objIndex].renderPipeline;
+	}
 	m_drawableVector.clear();
+	const size_t nLights = m_drawableLightVector.size();
+	for (size_t lightIndex = 0; lightIndex < nLights; ++lightIndex) {
+		if (m_drawableLightVector[lightIndex].drawableData != nullptr)
+			delete m_drawableLightVector[lightIndex].drawableData;
+		if (m_drawableLightVector[lightIndex].renderPipeline != nullptr)
+			delete m_drawableLightVector[lightIndex].renderPipeline;
+	}
+	m_drawableLightVector.clear();
 	glfwTerminate();
 }
 

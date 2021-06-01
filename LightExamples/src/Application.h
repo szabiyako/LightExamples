@@ -65,6 +65,11 @@ class Application
 	// LightsMenuData
 	std::vector<Drawable> m_drawableLightVector;
 	std::vector<glm::mat4x4> m_lightModelMatrixVector;
+	//needs a Light type
+	std::vector<bool> m_lightEnable;
+	std::vector<glm::vec3> m_lightPos;
+	std::vector<glm::vec3> m_lightDir;
+	std::vector<bool> m_lightEnableShadows;
 
 
 	bool showCursor = false;

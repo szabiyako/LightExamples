@@ -3,9 +3,10 @@
 #include "DrawableData/DrawableData.h"
 #include "RenderPipeline/RenderPipeline.h"
 
-#include "Utils/NonCopyable.h"
+//#include "Utils/NonCopyable.h"// : public NonCopyable
 
-struct Drawable// : public NonCopyable
+// Needs to delete variable ptrs before deleting Drawable
+struct Drawable
 {
 	DrawableData::DrawableData *drawableData = nullptr;
 	RenderPipeline::RenderPipeline *renderPipeline = nullptr;
