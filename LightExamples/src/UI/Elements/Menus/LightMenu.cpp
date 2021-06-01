@@ -1,4 +1,4 @@
-#include "ObjectMenu.h"
+#include "LightMenu.h"
 
 #include "LoadableData/ObjData/Tools/Import.h"
 #include "Utils/Console.h"
@@ -7,7 +7,8 @@
 
 #include "glm/gtc/matrix_transform.hpp"
 
-UI::ObjectMenu::ObjectMenu(const ImVec2& windowPos)
+
+UI::LightMenu::LightMenu(const ImVec2& windowPos)
 	: m_windowPos(windowPos)
 {
 	//m_windowFlags |= ImGuiWindowFlags_NoTitleBar;
@@ -21,10 +22,10 @@ UI::ObjectMenu::ObjectMenu(const ImVec2& windowPos)
 	//m_windowFlags |= ImGuiWindowFlags_NoBringToFrontOnFocus;
 
 	m_uniqueName = getNextUniqueName();
-	m_name = "New object";
+	m_name = "New light";
 }
 
-void UI::ObjectMenu::process(const int windowWidth, const int windowHeight, bool &enableKeysInput)
+void UI::LightMenu::process(const int windowWidth, const int windowHeight, bool& enableKeysInput)
 {
 	if (!isDataPtrsSetup())
 		return;
@@ -34,7 +35,7 @@ void UI::ObjectMenu::process(const int windowWidth, const int windowHeight, bool
 
 	ImGui::SetNextWindowPos(m_windowPos, ImGuiCond_Once);
 	ImGui::SetNextWindowSize(ImVec2(190, 400), ImGuiCond_Once);
-	
+
 	ImGui::Begin(std::string(m_name + "##" + m_uniqueName).c_str(), m_isOpen, m_windowFlags);
 	m_windowPos = ImGui::GetWindowPos();
 
@@ -55,13 +56,31 @@ void UI::ObjectMenu::process(const int windowWidth, const int windowHeight, bool
 	else {
 		m_newName = m_name;
 	}
-	ImGui::Text("Obj file");
+	ImGui::Text("Light type");
 	ImGui::SameLine();
 	if (ImGui::Button(loadObjectLabel.c_str())) {
-		ImGuiFileDialog::Instance()->Close();
-		ImGui::SetNextWindowPos(ImVec2(m_windowPos.x + 40, m_windowPos.y + 70), ImGuiCond_Always);
-		ImGui::SetNextWindowSize(ImVec2(400, 400), ImGuiCond_Always);
-		ImGuiFileDialog::Instance()->OpenDialog(m_uniqueName, "Choose File", ".obj", ".");
+		//ImGuiFileDialog::Instance()->Close();
+		//ImGui::SetNextWindowPos(ImVec2(m_windowPos.x + 40, m_windowPos.y + 70), ImGuiCond_Always);
+		//ImGui::SetNextWindowSize(ImVec2(400, 400), ImGuiCond_Always);
+		//ImGuiFileDialog::Instance()->OpenDialog(m_uniqueName, "Choose File", ".obj", ".");
+		ObjData objData;
+		std::string errorMessage;
+		ObjDataTools::Import::fromFile(objData, errorMessage, "D:/Git/QtProjects/cube.obj");
+		const bool isLoaded = errorMessage.empty();
+		if (!isLoaded) {
+			Console::print("Failed to load \"Cube\"" + errorMessage + '\n');
+		}
+		else {
+			Console::print("Loaded \"Cube\"\n");
+		}
+		DrawableData::Default* defaultData = new DrawableData::Default(objData);
+		if (m_drawable->drawableData != nullptr)
+			delete m_drawable->drawableData;
+		m_drawable->drawableData = defaultData;
+		RenderPipeline::Default* defaultPipeline = new RenderPipeline::Default();
+		if (m_drawable->renderPipeline != nullptr)
+			delete m_drawable->renderPipeline;
+		m_drawable->renderPipeline = defaultPipeline;
 	}
 
 	if (canBeDrawn) {
@@ -115,83 +134,45 @@ void UI::ObjectMenu::process(const int windowWidth, const int windowHeight, bool
 			}
 		}
 	}
-
-	// display
-	if (ImGuiFileDialog::Instance()->Display(m_uniqueName))
-	{
-		// action if OK
-		if (ImGuiFileDialog::Instance()->IsOk())
-		{
-			const std::string fileName = ImGuiFileDialog::Instance()->GetCurrentFileName();
-			const std::string filePathName = ImGuiFileDialog::Instance()->GetFilePathName();
-			ObjData objData;
-			std::string errorMessage;
-			ObjDataTools::Import::fromFile(objData, errorMessage, filePathName);
-			const bool isLoaded = errorMessage.empty();
-			if (!isLoaded){
-				Console::print("Failed to load \"" + filePathName + "\"" + errorMessage + '\n');
-			}
-			else {
-				Console::print("Loaded \"" + filePathName + "\"\n");
-				m_fileName = fileName;
-				if (m_name == "New object")
-					m_name = fileName;
-				m_loadableData->objData = objData;
-				DrawableData::Default *defaultData = new DrawableData::Default(objData);
-				if (m_drawable->drawableData != nullptr)
-					delete m_drawable->drawableData;
-				m_drawable->drawableData = defaultData;
-				RenderPipeline::Default* defaultPipeline = new RenderPipeline::Default();
-				if (m_drawable->renderPipeline != nullptr)
-					delete m_drawable->renderPipeline;
-				m_drawable->renderPipeline = defaultPipeline;
-			}
-		}
-		// close
-		ImGuiFileDialog::Instance()->Close();
-	}
 	ImGui::End();
 }
 
-void UI::ObjectMenu::setDataPtrs(
+void UI::LightMenu::setDataPtrs(
 	bool* isOpen,
-	LoadableData* loadableData,
 	Drawable* drawable,
-	glm::mat4x4 *modelMatrix)
+	glm::mat4x4* modelMatrix)
 {
 	m_isOpen = isOpen;
-	m_loadableData = loadableData;
 	m_drawable = drawable;
 	m_modelMatrix = modelMatrix;
 }
 
-bool UI::ObjectMenu::isDataPtrsSetup() const
+bool UI::LightMenu::isDataPtrsSetup() const
 {
 	return (m_isOpen != nullptr)
-	       && (m_loadableData != nullptr)
-	       && (m_drawable != nullptr)
-		   && (m_modelMatrix != nullptr);
+		&& (m_drawable != nullptr)
+		&& (m_modelMatrix != nullptr);
 }
 
-std::string UI::ObjectMenu::getUniqueName() const
+std::string UI::LightMenu::getUniqueName() const
 {
 	return m_uniqueName;
 }
 
-std::string UI::ObjectMenu::getName() const
+std::string UI::LightMenu::getName() const
 {
 	return m_name;
 }
 
-ImVec2 UI::ObjectMenu::getWindowPos() const
+ImVec2 UI::LightMenu::getWindowPos() const
 {
 	return m_windowPos;
 }
 
-std::string UI::ObjectMenu::getNextUniqueName()
+std::string UI::LightMenu::getNextUniqueName()
 {
 	static int index = 0;
-	return "Object " + std::to_string(index++);
+	return "Light " + std::to_string(index++);
 }
 
 

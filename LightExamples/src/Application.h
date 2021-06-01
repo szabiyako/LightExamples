@@ -57,11 +57,15 @@ class Application
 	bool m_enableVSync = false;
 	bool m_lastEnableVSync = false;
 
-
 	// ObjectsMenuData
 	std::vector<LoadableData> m_loadableDataVector;
 	std::vector<Drawable> m_drawableVector;
 	std::vector<glm::mat4x4> m_modelMatrixVector;
+
+	// LightsMenuData
+	std::vector<Drawable> m_drawableLightVector;
+	std::vector<glm::mat4x4> m_lightModelMatrixVector;
+
 
 	bool showCursor = false;
 

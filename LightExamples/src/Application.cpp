@@ -295,7 +295,7 @@ Application::Application()
 	UI::CameraMenuDataRef cameraMenuDataRef(m_camera, m_cameraSpeed);
 	UI::RenderingMenuDataRef renderingMenuDataRef(m_renderingType, m_maxFPS, m_enableVSync);
 	UI::ObjectsMenuDataRef objectsMenuDataRef(m_loadableDataVector, m_drawableVector, m_modelMatrixVector);
-	UI::LightsMenuDataRef lightsMenuDataRef(m_loadableDataVector, m_drawableVector, m_modelMatrixVector);
+	UI::LightsMenuDataRef lightsMenuDataRef(m_drawableLightVector, m_lightModelMatrixVector);
 	UI::DataRef dataRef(
 		m_enableKeysInput,
 		debugMenuDataRef,
@@ -387,6 +387,9 @@ void Application::run()
 
 				for (size_t i = 0; i < m_drawableVector.size(); ++i)
 					Renderer::draw(m_drawableVector[i], m_modelMatrixVector[i], m_camera.getView(), m_camera.getProj());
+
+				for (size_t i = 0; i < m_drawableLightVector.size(); ++i)
+					Renderer::draw(m_drawableLightVector[i], m_lightModelMatrixVector[i], m_camera.getView(), m_camera.getProj());
 			}
 
 			Renderer::draw(m_ui);

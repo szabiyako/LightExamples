@@ -8,12 +8,10 @@
 namespace UI {
 struct LightsMenuDataRef
 {
-	std::vector<LoadableData> &loadableDataVector;
 	std::vector<Drawable> &drawableVector;
 	std::vector<glm::mat4x4> &modelMatrixVector;
 
 	LightsMenuDataRef(
-		std::vector<LoadableData> &loadableDataVector,
 		std::vector<Drawable> &drawableVector,
 		std::vector<glm::mat4x4> &modelMatrixVector);
 };

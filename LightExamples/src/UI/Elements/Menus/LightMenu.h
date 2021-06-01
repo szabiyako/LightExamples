@@ -3,18 +3,16 @@
 #include "UI/Element.h"
 
 #include <vector>
-#include "LoadableData/LoadableData.h"
 #include "Drawable/Drawable.h"
 
 namespace UI {
-class ObjectMenu : public Element
+class LightMenu : public Element
 {
 public:
-	ObjectMenu(const ImVec2 &windowPos = ImVec2(645, 40));
+	LightMenu(const ImVec2 &windowPos = ImVec2(645, 445));
 	void process(const int windowWidth, const int windowHeight, bool &enableKeysInput) override;
 	void setDataPtrs(
 		bool *isOpen,
-		LoadableData* loadableData,
 		Drawable* drawable,
 		glm::mat4x4 *modelMatrix);
 	bool isDataPtrsSetup() const;
@@ -34,7 +32,6 @@ private:
 
 	bool *m_isOpen = nullptr;
 
-	LoadableData *m_loadableData = nullptr;
 	Drawable *m_drawable = nullptr;
 	glm::mat4x4 *m_modelMatrix = nullptr;
 
@@ -49,4 +46,3 @@ private:
 	float m_scale = 1.f;
 };
 }
-

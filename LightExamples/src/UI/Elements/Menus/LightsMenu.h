@@ -3,7 +3,7 @@
 #include "UI/Element.h"
 #include "UI/MenuDataRef/LightsMenuDataRef.h"
 
-#include "ObjectMenu.h"
+#include "LightMenu.h"
 
 namespace UI {
 class LightsMenu : public Element
@@ -19,7 +19,7 @@ private:
 	bool& m_isOpen;
 	LightsMenuDataRef m_dataRef;
 
-	std::vector<ObjectMenu> m_objectMenus;
+	std::vector<LightMenu> m_lightMenus;
 	std::vector<bool> m_showObjectMenu;
 };
 }
