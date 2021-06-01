@@ -5,11 +5,13 @@ UI::DataRef::DataRef(
 		const DebugMenuDataRef &debugMenuDataRef,
 		const CameraMenuDataRef &cameraMenuDataRef,
 		const RenderingMenuDataRef &renderingMenuDataRef,
-		const ObjectsMenuDataRef &objectsMenuDataRef)
+		const ObjectsMenuDataRef &objectsMenuDataRef,
+		const LightsMenuDataRef &lightsMenuDataRef)
 	: enableKeysInput(enableKeysInput),
 	  debugMenuDataRef(debugMenuDataRef),
 	  cameraMenuDataRef(cameraMenuDataRef),
 	  renderingMenuDataRef(renderingMenuDataRef),
-	  objectsMenuDataRef(objectsMenuDataRef)
+	  objectsMenuDataRef(objectsMenuDataRef),
+	  lightsMenuDataRef(lightsMenuDataRef)
 {
 }

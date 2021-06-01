@@ -295,12 +295,14 @@ Application::Application()
 	UI::CameraMenuDataRef cameraMenuDataRef(m_camera, m_cameraSpeed);
 	UI::RenderingMenuDataRef renderingMenuDataRef(m_renderingType, m_maxFPS, m_enableVSync);
 	UI::ObjectsMenuDataRef objectsMenuDataRef(m_loadableDataVector, m_drawableVector, m_modelMatrixVector);
+	UI::LightsMenuDataRef lightsMenuDataRef(m_loadableDataVector, m_drawableVector, m_modelMatrixVector);
 	UI::DataRef dataRef(
 		m_enableKeysInput,
 		debugMenuDataRef,
 		cameraMenuDataRef,
 		renderingMenuDataRef,
-		objectsMenuDataRef
+		objectsMenuDataRef,
+		lightsMenuDataRef
 	);
 	m_ui = new UI::UI(m_window, dataRef);
 }

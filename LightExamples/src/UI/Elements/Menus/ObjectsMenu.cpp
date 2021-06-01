@@ -40,7 +40,7 @@ void UI::ObjectsMenu::process(const int windowWidth, const int windowHeight, boo
 		return;
 
 	ImGui::SetNextWindowPos(ImVec2(480, 40), ImGuiCond_Once);
-	ImGui::SetNextWindowSize(ImVec2(160, 145), ImGuiCond_Once);
+	ImGui::SetNextWindowSize(ImVec2(160, 400), ImGuiCond_Once);
 	ImGui::Begin("Objects menu", &m_isOpen, m_windowFlags);
 	if (ImGui::Button("Add Object")) {
 		m_showObjectMenu.push_back(false);

@@ -20,7 +20,7 @@ void UI::RenderingMenu::process(const int windowWidth, const int windowHeight, b
 	if (!m_isOpen)
 		return;
 
-	ImGui::SetNextWindowPos(ImVec2(0, 215), ImGuiCond_Once);
+	ImGui::SetNextWindowPos(ImVec2(0, 260), ImGuiCond_Once);
 	ImGui::SetNextWindowSize(ImVec2(240, 342), ImGuiCond_Always);
 	ImGui::Begin("Rendering", &m_isOpen, m_windowFlags);
 	

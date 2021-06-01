@@ -10,7 +10,9 @@ UI::MainMenu::MainMenu(const DataRef& dataRef)
 	  m_renderingMenu(m_isRenderingMenuOpened,
 					  dataRef.renderingMenuDataRef),
 	  m_objectsMenu(m_isObjectsMenuOpened,
-		            dataRef.objectsMenuDataRef)
+		            dataRef.objectsMenuDataRef),
+	  m_lightsMenu(m_isLightsMenuOpened,
+				   dataRef.lightsMenuDataRef)
 {
 	//m_windowFlags |= ImGuiWindowFlags_NoTitleBar;
 	m_windowFlags |= ImGuiWindowFlags_NoScrollbar;
@@ -28,7 +30,7 @@ void UI::MainMenu::process(const int windowWidth, const int windowHeight, bool &
 {
 	ImGui::SetNextWindowPos(ImVec2(0, 40), ImGuiCond_Once);
 	//ImGui::SetNextWindowSize(ImVec2(160, 145), ImGuiCond_Always);
-	ImGui::SetNextWindowSize(ImVec2(160, 170), ImGuiCond_Always);
+	ImGui::SetNextWindowSize(ImVec2(160, 215), ImGuiCond_Always);
 	ImGui::Begin("Menu", NULL, m_windowFlags);
 	ImGui::Checkbox("Debug menu", &m_isDebugMenuOpened);
 	m_debugMenu.process(windowWidth, windowHeight, enableKeysInput);
@@ -38,6 +40,8 @@ void UI::MainMenu::process(const int windowWidth, const int windowHeight, bool &
 	m_renderingMenu.process(windowWidth, windowHeight, enableKeysInput);
 	ImGui::Checkbox("Objects in scene", &m_isObjectsMenuOpened);
 	m_objectsMenu.process(windowWidth, windowHeight, enableKeysInput);
+	ImGui::Checkbox("Lights in scene", &m_isLightsMenuOpened);
+	m_lightsMenu.process(windowWidth, windowHeight, enableKeysInput);
 	ImGui::Checkbox("Ambient occlusion", &m_isAmbientOcclusionMenuOpened);
 	ImGui::Checkbox("PostFX", &m_isPostFXMenuOpened);
 

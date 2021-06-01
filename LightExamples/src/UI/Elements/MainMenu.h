@@ -5,8 +5,9 @@
 
 #include "Menus/DebugMenu.h"
 #include "Menus/CameraMenu.h"
-#include "Menus/ObjectsMenu.h"
 #include "Menus/RenderingMenu.h"
+#include "Menus/ObjectsMenu.h"
+#include "Menus/LightsMenu.h"
 
 class Camera;
 
@@ -30,6 +31,9 @@ private:
 
 	bool m_isObjectsMenuOpened = false;
 	ObjectsMenu m_objectsMenu;
+
+	bool m_isLightsMenuOpened = false;
+	LightsMenu m_lightsMenu;
 
 	bool m_isAmbientOcclusionMenuOpened = false;
 	bool m_isPostFXMenuOpened = false;
