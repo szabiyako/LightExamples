@@ -39,11 +39,9 @@ void UI::LightMenu::process(const int windowWidth, const int windowHeight, bool&
 	ImGui::Begin(std::string(m_name + "##" + m_uniqueName).c_str(), m_isOpen, m_windowFlags);
 	m_windowPos = ImGui::GetWindowPos();
 
-	std::string loadObjectLabel = m_fileName;
+	std::string LightTypeString = getTypeAsString(m_lightSrc->getType());
 
 	const bool canBeDrawn = m_lightSrc->getDrawable().canBeDrawn();
-	if (!canBeDrawn)
-		loadObjectLabel = "Select";
 	ImGui::Text("Name");
 	ImGui::SameLine();
 	ImGuiInputTextFlags flags = 0;
@@ -58,11 +56,17 @@ void UI::LightMenu::process(const int windowWidth, const int windowHeight, bool&
 	}
 	ImGui::Text("Light type");
 	ImGui::SameLine();
-	if (ImGui::Button(loadObjectLabel.c_str())) {
-		//ImGuiFileDialog::Instance()->Close();
-		//ImGui::SetNextWindowPos(ImVec2(m_windowPos.x + 40, m_windowPos.y + 70), ImGuiCond_Always);
-		//ImGui::SetNextWindowSize(ImVec2(400, 400), ImGuiCond_Always);
-		//ImGuiFileDialog::Instance()->OpenDialog(m_uniqueName, "Choose File", ".obj", ".");
+	if (ImGui::Button(LightTypeString.c_str()))
+		ImGui::OpenPopup("lightTypePopup");
+
+	if (ImGui::BeginPopup("lightTypePopup"))
+	{
+		std::vector<LightSrc::Type> lightTypes = getTypesVector();
+		for (const LightSrc::Type& lightType : lightTypes)
+			if (ImGui::Selectable(getTypeAsString(lightType).c_str())) {
+				m_lightSrc->setType(lightType);
+			}		
+		ImGui::EndPopup();
 	}
 
 	if (canBeDrawn) {
@@ -114,6 +118,16 @@ void UI::LightMenu::process(const int windowWidth, const int windowHeight, bool&
 			m_lightSrc->updateModelMatrix();
 			m_lightSrc->updateDirection();
 		}
+		if (ImGui::CollapsingHeader("Params"))
+		{
+			bool isEnabled = m_lightSrc->isEnabled();
+			ImGui::Checkbox("Enable light", &isEnabled);
+			bool isShadowsEnabled = m_lightSrc->isShadowsEnabled();
+			ImGui::Checkbox("Enable shadows", &isShadowsEnabled);
+
+			m_lightSrc->setEnabled(isEnabled);
+			m_lightSrc->setShadowsEnabled(isShadowsEnabled);
+		}
 	}
 	ImGui::End();
 }
@@ -151,6 +165,22 @@ std::string UI::LightMenu::getNextUniqueName()
 {
 	static int index = 0;
 	return "Light " + std::to_string(index++);
+}
+
+std::string UI::LightMenu::getTypeAsString(const LightSrc::Type& type)
+{
+	switch (type)
+	{
+	case LightSrc::Type::DIRECTIONAL: return "Directional";
+	case LightSrc::Type::POINT: return "Point";
+	case LightSrc::Type::SPOTLIGHT: return "Spotlight";
+	}
+	return "UNKNOWN";
+}
+
+std::vector<LightSrc::Type> UI::LightMenu::getTypesVector()
+{
+	return {LightSrc::Type::DIRECTIONAL, LightSrc::Type::POINT, LightSrc::Type::SPOTLIGHT};
 }
 
 

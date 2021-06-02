@@ -28,9 +28,9 @@ void UI::RenderingMenu::process(const int windowWidth, const int windowHeight, b
 	ImGui::SameLine();
 	if (ImGui::Button(getRenderTypeAsString(m_dataRef.renderingType).c_str()))
 		ImGui::OpenPopup("renderingTypePopup");
-	std::vector<RenderingType> renderingTypes = { RenderingType::DEFAULT, RenderingType::DEFERRED, RenderingType::RAYTRACING };
 	if (ImGui::BeginPopup("renderingTypePopup"))
 	{
+		std::vector<RenderingType> renderingTypes = { RenderingType::DEFAULT, RenderingType::DEFERRED, RenderingType::RAYTRACING };
 		for (const RenderingType& renderingType : renderingTypes)
 			if (ImGui::Selectable(getRenderTypeAsString(renderingType).c_str()))
 				m_dataRef.renderingType = renderingType;

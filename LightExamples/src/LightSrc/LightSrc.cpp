@@ -13,20 +13,7 @@
 
 LightSrc::LightSrc()
 {
-	ObjData objData;
-	std::string errorMessage;
-	ObjDataTools::Import::fromFile(objData, errorMessage, "D:/Git/QtProjects/cube.obj");
-	const bool isLoaded = errorMessage.empty();
-	if (!isLoaded) {
-		Console::print("Failed to load \"Cube\" in lightSrc " + errorMessage + '\n');
-	}
-	else {
-		Console::print("Loaded \"Cube\" in lightSrc\n");
-	}
-	DrawableData::Default* defaultData = new DrawableData::Default(objData);
-	m_drawable.drawableData = defaultData;
-	RenderPipeline::Default* defaultPipeline = new RenderPipeline::Default();
-	m_drawable.renderPipeline = defaultPipeline;
+	setType(Type::DIRECTIONAL);
 }
 
 LightSrc::~LightSrc()
@@ -48,7 +35,31 @@ Drawable LightSrc::getDrawable() const
 
 void LightSrc::setType(const Type& type)
 {
+	if (m_type == type)
+		return;
+
 	m_type = type;
+
+	ObjData objData;
+	std::string errorMessage;
+	if (m_type == Type::DIRECTIONAL)
+		ObjDataTools::Import::fromFile(objData, errorMessage, "res/models/arrow.obj");
+	else if (m_type == Type::POINT)
+		ObjDataTools::Import::fromFile(objData, errorMessage, "res/models/sphere.obj");
+	else if (m_type == Type::SPOTLIGHT)
+		ObjDataTools::Import::fromFile(objData, errorMessage, "res/models/projector.obj");
+	const bool isLoaded = errorMessage.empty();
+	if (!isLoaded) {
+		Console::print("Failed to load model in lightSrc " + errorMessage + '\n');
+	}
+	DrawableData::Default* defaultData = new DrawableData::Default(objData);
+	if (m_drawable.drawableData != nullptr)
+		delete m_drawable.drawableData;
+	m_drawable.drawableData = defaultData;
+	if (m_drawable.renderPipeline == nullptr) {
+		RenderPipeline::Default* defaultPipeline = new RenderPipeline::Default();
+		m_drawable.renderPipeline = defaultPipeline;
+	}
 }
 
 void LightSrc::setEnabled(const bool value)

@@ -21,13 +21,13 @@ public:
 	ImVec2 getWindowPos() const;
 private:
 	static std::string getNextUniqueName();
-
+	static std::string getTypeAsString(const LightSrc::Type &type);
+	static std::vector<LightSrc::Type> getTypesVector();
 	ImGuiWindowFlags m_windowFlags = 0;
 
 	std::string m_uniqueName;
 	std::string m_name;
 	std::string m_newName;
-	std::string m_fileName = "File";
 
 	bool *m_isOpen = nullptr;
 	ImVec2 m_windowPos;
