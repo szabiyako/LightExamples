@@ -56,3 +56,13 @@ void Default::setColor(const glm::vec3 &color)
 {
 	m_color = glm::clamp(color, glm::vec3(0.f, 0.f, 0.f), glm::vec3(1.f, 1.f, 1.f));
 }
+
+bool Default::getCullFace() const
+{
+	return m_cullFace;
+}
+
+glm::vec3 Default::getColor() const
+{
+	return m_color;
+}

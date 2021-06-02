@@ -35,7 +35,11 @@ Drawable Model::getDrawable() const
 
 void Model::setRenderType(const RenderType& type)
 {
+	if (m_renderType == type)
+		return;
+
 	m_renderType = type;
+	//GOD DAMN
 }
 
 Model::RenderType Model::getRenderType() const

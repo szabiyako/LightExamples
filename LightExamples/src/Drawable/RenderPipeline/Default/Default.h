@@ -16,6 +16,8 @@ public:
 		const glm::mat4x4& projectionMatrix) override;
 	void setCullFace(const bool value);
 	void setColor(const glm::vec3& color);
+	bool getCullFace() const;
+	glm::vec3 getColor() const;
 private:
 	Shader m_shader;
 	bool m_cullFace = true;

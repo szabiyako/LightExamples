@@ -69,12 +69,16 @@ void UI::ObjectMenu::process(const int windowWidth, const int windowHeight, bool
 		{
 			bool isVisible = m_model->isVisible();
 			ImGui::Checkbox("Visible", &isVisible);
-			//ImGui::Checkbox("Cull faces", &m_cullFaces);
+			// Maby do this other way
+			RenderPipeline::Default *defaultPipeline = dynamic_cast<RenderPipeline::Default*>(m_model->getDrawableRef().renderPipeline);
+			bool cullFace = defaultPipeline->getCullFace();
+			ImGui::Checkbox("Cull faces", &cullFace);
 			const glm::vec3 currentColor = m_model->getColor();
 			float color[3] = { currentColor.x, currentColor.y, currentColor.z };
 			ImGui::ColorEdit3("Color", color);
 
 			m_model->setVisible(isVisible);
+			defaultPipeline->setCullFace(cullFace);
 			m_model->setColor(glm::vec3(color[0], color[1], color[2]));
 		}
 		if (ImGui::CollapsingHeader("Transform"))

@@ -14,13 +14,17 @@ namespace DrawableData {
 class Default : public DrawableData, public NonCopyable
 {
 public:
+	Default(const ObjData& objData);
+	void loadFromObjData(const ObjData& objData);
+	~Default();
+
+	bool hasUVs() const;
+//private:
 	VertexArray m_vertexArray;
 	VertexBuffer m_vertexBuffer;
 	IndexBuffer m_indexBuffer;
 
-	Default(const ObjData& objData);
-	void loadFromObjData(const ObjData& objData);
-	~Default();
+	bool m_hasUVs = false;
 };
 }
 

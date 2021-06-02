@@ -384,7 +384,7 @@ void Application::run()
 			}
 			m_lastEnableVSync = m_enableVSync;
 
-			if (m_renderingType == RenderingType::DEFAULT) { // Ok for now
+			if (m_renderingType == RenderingType::DEFAULT || m_renderingType == RenderingType::DEFERRED) { // Ok for now
 				//Skybox
 				shaderSky.bind();
 				shaderSky.setUniformMatrix4f("u_Model", glm::scale(glm::translate(oneM, glm::vec3(m_camera.getPos().x, m_camera.getPos().y, m_camera.getPos().z)), glm::vec3(900.0f, 900.0f, 900.0f)));
