@@ -74,12 +74,13 @@ void UI::LightMenu::process(const int windowWidth, const int windowHeight, bool&
 		{
 			bool isVisible = m_lightSrc->isVisible();
 			ImGui::Checkbox("Visible", &isVisible);
-			const glm::vec3 currentColor = m_lightSrc->getColor();
-			float color[3] = { currentColor.x, currentColor.y, currentColor.z };
+
+			const glm::vec3 modelColor = m_lightSrc->getModelColor();
+			float color[3] = { modelColor.x, modelColor.y, modelColor.z };
 			ImGui::ColorEdit3("Color", color);
 
 			m_lightSrc->setVisible(isVisible);
-			m_lightSrc->setColor(glm::vec3(color[0], color[1], color[2]));
+			m_lightSrc->setModelColor(glm::vec3(color[0], color[1], color[2]));
 
 		}
 		if (ImGui::CollapsingHeader("Transform"))
@@ -115,6 +116,7 @@ void UI::LightMenu::process(const int windowWidth, const int windowHeight, bool&
 				rotations = { 0.f, 0.f, 0.f };
 				scale = 1.f;
 			}
+
 			m_lightSrc->updateModelMatrix();
 			m_lightSrc->updateDirection();
 		}
@@ -122,10 +124,16 @@ void UI::LightMenu::process(const int windowWidth, const int windowHeight, bool&
 		{
 			bool isEnabled = m_lightSrc->isEnabled();
 			ImGui::Checkbox("Enable light", &isEnabled);
+
+			const glm::vec3 lightColor = m_lightSrc->getLightColor();
+			float color[3] = { lightColor.x, lightColor.y, lightColor.z };
+			ImGui::ColorEdit3("Light", color);
+
 			bool isShadowsEnabled = m_lightSrc->isShadowsEnabled();
 			ImGui::Checkbox("Enable shadows", &isShadowsEnabled);
 
 			m_lightSrc->setEnabled(isEnabled);
+			m_lightSrc->setLightColor(glm::vec3(color[0], color[1], color[2]));
 			m_lightSrc->setShadowsEnabled(isShadowsEnabled);
 		}
 	}

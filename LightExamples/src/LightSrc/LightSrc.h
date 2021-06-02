@@ -38,15 +38,19 @@ public:
 	glm::vec3 getPos() const;
 	glm::vec3 getDir() const;
 
-	glm::vec3 getColor() const;
-	void setColor(const glm::vec3 &color);
+	glm::vec3 getLightColor() const;
+	void setLightColor(const glm::vec3 &color);
+
+	glm::vec3 getModelColor() const;
+	void setModelColor(const glm::vec3& color);
 
 	bool isVisible() const;
 	void setVisible(const bool value);
 private:
 	Drawable m_drawable;
 	glm::mat4x4 m_modelMatrix = glm::mat4(1.f);
-	glm::vec3 m_color = { 1.f, 1.f, 1.f };
+	glm::vec3 m_modelColor = { 1.f, 1.f, 1.f };
+	glm::vec3 m_lightColor = { 1.f, 1.f, 1.f };
 
 	// Shader data
 	Type m_type = Type::POINT;

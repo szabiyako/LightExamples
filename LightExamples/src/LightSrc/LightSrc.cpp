@@ -146,19 +146,29 @@ glm::vec3 LightSrc::getDir() const
 	return m_dir;
 }
 
-glm::vec3 LightSrc::getColor() const
+glm::vec3 LightSrc::getLightColor() const
 {
-	return m_color;
+	return m_lightColor;
 }
 
-void LightSrc::setColor(const glm::vec3& color)
+void LightSrc::setLightColor(const glm::vec3& color)
 {
-	if (m_color == color)
+	m_lightColor = color;
+}
+
+glm::vec3 LightSrc::getModelColor() const
+{
+	return m_modelColor;
+}
+
+void LightSrc::setModelColor(const glm::vec3& color)
+{
+	if (m_modelColor == color)
 		return;
-	m_color = color;
+	m_modelColor = color;
 	RenderPipeline::Default* defaultPipeline = dynamic_cast<RenderPipeline::Default*>(m_drawable.renderPipeline);
 	ASSERT(defaultPipeline != nullptr); // RenderPipeline is not Default type
-	defaultPipeline->setColor(m_color);
+	defaultPipeline->setColor(m_modelColor);
 }
 
 bool LightSrc::isVisible() const
