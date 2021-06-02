@@ -294,7 +294,7 @@ Application::Application()
 	UI::DebugMenuDataRef debugMenuDataRef(m_enableFPScounter,m_enableCursor);
 	UI::CameraMenuDataRef cameraMenuDataRef(m_camera, m_cameraSpeed);
 	UI::RenderingMenuDataRef renderingMenuDataRef(m_renderingType, m_maxFPS, m_enableVSync);
-	UI::ObjectsMenuDataRef objectsMenuDataRef(m_loadableDataVector, m_drawableVector, m_modelMatrixVector);
+	UI::ObjectsMenuDataRef objectsMenuDataRef(m_models, m_lightSources);
 	UI::LightsMenuDataRef lightsMenuDataRef(m_lightSources);
 	UI::DataRef dataRef(
 		m_enableKeysInput,
@@ -310,15 +310,11 @@ Application::Application()
 Application::~Application()
 {
 	delete m_ui;
-	m_loadableDataVector.clear();
-	const size_t nObjects = m_drawableVector.size();
-	for (size_t objIndex = 0; objIndex < nObjects; ++objIndex) {
-		if (m_drawableVector[objIndex].drawableData != nullptr)
-			delete m_drawableVector[objIndex].drawableData;
-		if (m_drawableVector[objIndex].renderPipeline != nullptr)
-			delete m_drawableVector[objIndex].renderPipeline;
+	const size_t nModels = m_models.size();
+	for (size_t modelIndex = 0; modelIndex < nModels; ++modelIndex) {
+		m_models[modelIndex].deleteDrawable();
 	}
-	m_drawableVector.clear();
+	m_models.clear();
 	const size_t nLights = m_lightSources.size();
 	for (size_t lightIndex = 0; lightIndex < nLights; ++lightIndex) {
 		m_lightSources[lightIndex].deleteDrawable();
@@ -396,8 +392,8 @@ void Application::run()
 				Renderer::draw(va, ibSkybox, shaderSky, skyboxTexture);
 				//
 
-				for (size_t i = 0; i < m_drawableVector.size(); ++i)
-					Renderer::draw(m_drawableVector[i], m_modelMatrixVector[i], m_camera.getView(), m_camera.getProj());
+				for (size_t i = 0; i < m_models.size(); ++i)
+					Renderer::draw(m_models[i].getDrawable(), m_models[i].getModelMatrix(), m_camera.getView(), m_camera.getProj());
 
 				for (size_t i = 0; i < m_lightSources.size(); ++i)
 					Renderer::draw(m_lightSources[i].getDrawable(), m_lightSources[i].getModelMatrix(), m_camera.getView(), m_camera.getProj());

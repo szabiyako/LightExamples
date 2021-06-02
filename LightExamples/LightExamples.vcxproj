@@ -227,7 +227,7 @@
     <ClCompile Include="src\UI\Element.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="res\shaders\Basic.shader" />
+    <None Include="res\shaders\Default.shader" />
     <None Include="res\shaders\FaceChunk.shader" />
     <None Include="res\shaders\LightSrc.shader" />
     <None Include="res\shaders\SkyBox.shader" />

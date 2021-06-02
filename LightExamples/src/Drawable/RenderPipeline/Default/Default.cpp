@@ -11,7 +11,7 @@
 using namespace RenderPipeline;
 
 Default::Default()
-	: m_shader("res/shaders/Basic.shader")
+	: m_shader("res/shaders/Default.shader")
 {
 }
 

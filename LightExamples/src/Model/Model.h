@@ -18,7 +18,7 @@ public:
 		RAYTRACING
 	};
 
-	Model(const std::vector<LightSrc> &lightSources);
+	Model(std::vector<LightSrc> *lightSources = nullptr);
 	~Model();
 	void deleteDrawable();
 
@@ -35,15 +35,20 @@ public:
 
 	glm::vec3 getColor() const;
 	void setColor(const glm::vec3& color);
+
+	bool isVisible() const;
+	void setVisible(const bool value);
+
+	LoadableData& getLoadableDataRef();
+	Drawable& getDrawableRef();
 private:
 	LoadableData m_loadableData;
 	Drawable m_drawable;
 
-	const std::vector<LightSrc> &m_lightSources;
+	std::vector<LightSrc> *m_lightSources;
 
 	RenderType m_renderType = RenderType::DEFAULT;
 
-	bool m_isVisible = true;
 	bool m_cullFaces = true;
 	glm::vec3 m_color = { 1.f, 1.f, 1.f };
 

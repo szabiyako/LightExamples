@@ -23,15 +23,11 @@ void UI::ObjectsMenu::process(const int windowWidth, const int windowHeight, boo
 	for (size_t objIndex = 0; objIndex < nObjects; ++objIndex) {
 		// send ref to data
 		bool isOpen = m_showObjectMenu[objIndex];
-		LoadableData* loadableData = &m_dataRef.loadableDataVector[objIndex];
-		Drawable* drawable = &m_dataRef.drawableVector[objIndex];
-		glm::mat4x4 *modelMatrix = &m_dataRef.modelMatrixVector[objIndex];
+		Model *model = &m_dataRef.models[objIndex];
 
 		m_objectMenus[objIndex].setDataPtrs(
 			&isOpen,
-			loadableData,
-			drawable,
-			modelMatrix);
+			model);
 		m_objectMenus[objIndex].process(windowWidth, windowHeight, enableKeysInput);
 		m_showObjectMenu[objIndex] = isOpen;
 	}
@@ -44,9 +40,7 @@ void UI::ObjectsMenu::process(const int windowWidth, const int windowHeight, boo
 	ImGui::Begin("Objects menu", &m_isOpen, m_windowFlags);
 	if (ImGui::Button("Add Object")) {
 		m_showObjectMenu.push_back(false);
-		m_dataRef.loadableDataVector.push_back(LoadableData());
-		m_dataRef.modelMatrixVector.push_back(glm::mat4(1.f));
-		m_dataRef.drawableVector.push_back(Drawable());
+		m_dataRef.models.push_back(Model(&m_dataRef.lightSources));
 		if (nObjects != 0) {
 			ImVec2 newPos = m_objectMenus[nObjects - 1].getWindowPos();
 			newPos.x += 195;
@@ -69,11 +63,8 @@ void UI::ObjectsMenu::process(const int windowWidth, const int windowHeight, boo
 	if (indexToDelete != -1) {
 		m_showObjectMenu.erase(m_showObjectMenu.begin() + indexToDelete);
 		m_objectMenus.erase(m_objectMenus.begin() + indexToDelete);
-		m_dataRef.loadableDataVector.erase(m_dataRef.loadableDataVector.begin() + indexToDelete);
-		m_dataRef.modelMatrixVector.erase(m_dataRef.modelMatrixVector.begin() + indexToDelete);
-		delete m_dataRef.drawableVector[indexToDelete].drawableData;
-		delete m_dataRef.drawableVector[indexToDelete].renderPipeline;
-		m_dataRef.drawableVector.erase(m_dataRef.drawableVector.begin() + indexToDelete);
+		m_dataRef.models[indexToDelete].deleteDrawable();
+		m_dataRef.models.erase(m_dataRef.models.begin() + indexToDelete);
 	}
 
 	ImGui::End();

@@ -3,8 +3,7 @@
 #include "UI/Element.h"
 
 #include <vector>
-#include "LoadableData/LoadableData.h"
-#include "Drawable/Drawable.h"
+#include "Model/Model.h"
 
 namespace UI {
 class ObjectMenu : public Element
@@ -14,9 +13,7 @@ public:
 	void process(const int windowWidth, const int windowHeight, bool &enableKeysInput) override;
 	void setDataPtrs(
 		bool *isOpen,
-		LoadableData* loadableData,
-		Drawable* drawable,
-		glm::mat4x4 *modelMatrix);
+		Model* model);
 	bool isDataPtrsSetup() const;
 
 	std::string getUniqueName() const;
@@ -32,21 +29,11 @@ private:
 	std::string m_newName;
 	std::string m_fileName = "File";
 
+	ImVec2 m_windowPos;
+	
 	bool *m_isOpen = nullptr;
 
-	LoadableData *m_loadableData = nullptr;
-	Drawable *m_drawable = nullptr;
-	glm::mat4x4 *m_modelMatrix = nullptr;
-
-	ImVec2 m_windowPos;
-
-	bool m_isVisible = true;
-	bool m_cullFaces = true;
-	float m_color[3] = { 1.f, 1.f, 1.f };
-
-	glm::vec3 m_position = { 0.f, 0.f, 0.f };
-	glm::vec3 m_rotation = { 0.f, 0.f, 0.f };
-	float m_scale = 1.f;
+	Model *m_model = nullptr;
 };
 }
 

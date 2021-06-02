@@ -33,17 +33,5 @@ private:
 	ImVec2 m_windowPos;
 
 	LightSrc *m_lightSrc = nullptr;
-	//
-	//Drawable *m_drawable = nullptr;
-	//glm::mat4x4 *m_modelMatrix = nullptr;
-	//
-	//
-	//bool m_isVisible = true;
-	//bool m_cullFaces = true;
-	//float m_color[3] = { 1.f, 1.f, 1.f };
-	//
-	//glm::vec3 m_position = { 0.f, 0.f, 0.f };
-	//glm::vec3 m_rotation = { 0.f, 0.f, 0.f };
-	//float m_scale = 1.f;
 };
 }

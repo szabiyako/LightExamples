@@ -11,7 +11,7 @@
 
 #include "glm/gtc/matrix_transform.hpp"
 
-Model::Model(const std::vector<LightSrc>& lightSources)
+Model::Model(std::vector<LightSrc> *lightSources)
 	: m_lightSources(lightSources)
 {
 }
@@ -86,4 +86,24 @@ void Model::setColor(const glm::vec3& color)
 	RenderPipeline::Default* defaultPipeline = dynamic_cast<RenderPipeline::Default*>(m_drawable.renderPipeline);
 	ASSERT(defaultPipeline != nullptr); // RenderPipeline is not Default type
 	defaultPipeline->setColor(m_color);
+}
+
+bool Model::isVisible() const
+{
+	return m_drawable.isVisible();
+}
+
+void Model::setVisible(const bool value)
+{
+	m_drawable.setVisible(value);
+}
+
+LoadableData& Model::getLoadableDataRef()
+{
+	return m_loadableData;
+}
+
+Drawable& Model::getDrawableRef()
+{
+	return m_drawable;
 }

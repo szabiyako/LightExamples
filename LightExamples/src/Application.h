@@ -32,6 +32,7 @@
 
 #include "RenderingType.h"
 
+#include "Model/Model.h"
 #include "LightSrc/LightSrc.h"
 
 class Application
@@ -60,14 +61,10 @@ class Application
 	bool m_lastEnableVSync = false;
 
 	// ObjectsMenuData
-	std::vector<LoadableData> m_loadableDataVector;
-	std::vector<Drawable> m_drawableVector;
-	std::vector<glm::mat4x4> m_modelMatrixVector;
+	std::vector<Model> m_models;
 
 	// LightsMenuData
 	std::vector<LightSrc> m_lightSources;
-	//std::vector<Drawable> m_drawableLightVector;
-	//std::vector<glm::mat4x4> m_lightModelMatrixVector;
 
 
 	bool showCursor = false;
