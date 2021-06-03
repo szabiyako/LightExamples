@@ -15,7 +15,7 @@ public:
 		SPOTLIGHT
 	};
 
-	LightSrc(std::vector<Model>* models = nullptr);
+	LightSrc();
 	~LightSrc();
 	void deleteDrawable();
 
@@ -54,8 +54,6 @@ private:
 	glm::mat4x4 m_modelMatrix = glm::mat4(1.f);
 	glm::vec3 m_modelColor = { 1.f, 1.f, 1.f };
 	glm::vec3 m_lightColor = { 1.f, 1.f, 1.f };
-
-	std::vector<Model>* m_models;
 
 	// Shader data
 	Type m_type = Type::POINT;

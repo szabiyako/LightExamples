@@ -13,8 +13,7 @@
 
 #include "Model/Model.h"
 
-LightSrc::LightSrc(std::vector<Model>* models)
-	: m_models(models)
+LightSrc::LightSrc()
 {
 	setType(Type::DIRECTIONAL);
 }

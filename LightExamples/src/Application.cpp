@@ -295,7 +295,7 @@ Application::Application()
 	UI::CameraMenuDataRef cameraMenuDataRef(m_camera, m_cameraSpeed);
 	UI::RenderingMenuDataRef renderingMenuDataRef(m_renderingType, m_maxFPS, m_enableVSync);
 	UI::ObjectsMenuDataRef objectsMenuDataRef(m_models, m_lightSources);
-	UI::LightsMenuDataRef lightsMenuDataRef(m_lightSources, m_models);
+	UI::LightsMenuDataRef lightsMenuDataRef(m_lightSources);
 	UI::DataRef dataRef(
 		m_enableKeysInput,
 		debugMenuDataRef,
@@ -401,12 +401,19 @@ void Application::run()
 				shaderSky.setUniformMatrix4f("u_ViewProj", m_camera.getViewProj());
 				Renderer::draw(va, ibSkybox, shaderSky, skyboxTexture);
 				//
+				for (size_t i = 0; i < m_lightSources.size(); ++i) {
+					// Creating shadow maps
+				}
 
 				for (size_t i = 0; i < m_models.size(); ++i)
 					Renderer::draw(m_models[i].getDrawable(), m_models[i].getModelMatrix(), m_camera.getView(), m_camera.getProj());
 
 				for (size_t i = 0; i < m_lightSources.size(); ++i)
 					Renderer::draw(m_lightSources[i].getDrawable(), m_lightSources[i].getModelMatrix(), m_camera.getView(), m_camera.getProj());
+
+				// Ambient Occlusion
+
+				// POSTFX
 			}
 
 			Renderer::draw(m_ui);

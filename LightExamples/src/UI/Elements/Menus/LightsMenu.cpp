@@ -40,7 +40,7 @@ void UI::LightsMenu::process(const int windowWidth, const int windowHeight, bool
 	ImGui::Begin("Lights menu", &m_isOpen, m_windowFlags);
 	if (ImGui::Button("Add Object")) {
 		m_showObjectMenu.push_back(false);
-		m_dataRef.lightSources.push_back(LightSrc(&m_dataRef.models));
+		m_dataRef.lightSources.push_back(LightSrc());
 		if (nObjects != 0) {
 			ImVec2 newPos = m_lightMenus[nObjects - 1].getWindowPos();
 			newPos.x += 195;
