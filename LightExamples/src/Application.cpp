@@ -343,6 +343,16 @@ void Application::run()
 		memcpy(indicesSkybox, ind.data(), ind.size() * sizeof(unsigned int));
 	}
 
+	// Temp
+	int maxTextureSize = 0;
+	glGetIntegerv(GL_MAX_TEXTURE_SIZE, &maxTextureSize);
+	Console::print("Max texture size = " + std::to_string(maxTextureSize) + "x" + std::to_string(maxTextureSize) + "\n");
+	Console::print("Max vertices that can be raytraced = " + std::to_string(double(maxTextureSize * maxTextureSize) / 8.0) + "\n");
+
+	int textureUnitsFrag = 0;
+	glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, &textureUnitsFrag);
+	Console::print("Max textures in frag shader at once = " + std::to_string(textureUnitsFrag) + "\n");
+
 	{ ///START SCOPE
 		Texture emptyText(155, 155, 155);
 		Texture skyboxTexture("res/textures/Skybox.png");
