@@ -11,7 +11,10 @@
 
 #include "glm/gtc/matrix_transform.hpp"
 
-LightSrc::LightSrc()
+#include "Model/Model.h"
+
+LightSrc::LightSrc(std::vector<Model>* models)
+	: m_models(models)
 {
 	setType(Type::DIRECTIONAL);
 }

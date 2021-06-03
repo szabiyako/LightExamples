@@ -11,6 +11,8 @@
 
 #include "glm/gtc/matrix_transform.hpp"
 
+#include "LightSrc/LightSrc.h"
+
 Model::Model(std::vector<LightSrc> *lightSources)
 	: m_lightSources(lightSources)
 {

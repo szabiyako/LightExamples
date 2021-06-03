@@ -8,8 +8,10 @@ namespace UI {
 struct LightsMenuDataRef
 {
 	std::vector<LightSrc> &lightSources;
+	std::vector<Model> &models;
 
 	LightsMenuDataRef(
-		std::vector<LightSrc> &lightSources);
+		std::vector<LightSrc> &lightSources,
+		std::vector<Model> &models);
 };
 }

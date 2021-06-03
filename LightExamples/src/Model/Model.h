@@ -3,7 +3,8 @@
 #include "LoadableData/LoadableData.h"
 #include "Drawable/Drawable.h"
 #include "glm/glm.hpp"
-#include "LightSrc/LightSrc.h"
+
+class LightSrc;
 
 class Model
 {

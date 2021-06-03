@@ -295,7 +295,7 @@ Application::Application()
 	UI::CameraMenuDataRef cameraMenuDataRef(m_camera, m_cameraSpeed);
 	UI::RenderingMenuDataRef renderingMenuDataRef(m_renderingType, m_maxFPS, m_enableVSync);
 	UI::ObjectsMenuDataRef objectsMenuDataRef(m_models, m_lightSources);
-	UI::LightsMenuDataRef lightsMenuDataRef(m_lightSources);
+	UI::LightsMenuDataRef lightsMenuDataRef(m_lightSources, m_models);
 	UI::DataRef dataRef(
 		m_enableKeysInput,
 		debugMenuDataRef,
