@@ -230,10 +230,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="res\shaders\Default.shader" />
-    <None Include="res\shaders\FaceChunk.shader" />
-    <None Include="res\shaders\LightSrc.shader" />
-    <None Include="res\shaders\SkyBox.shader" />
-    <None Include="res\shaders\UI.shader" />
+    <None Include="res\shaders\Skybox1.shader" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\OpenGL\Texture\CubeMap\CubeMap.h" />

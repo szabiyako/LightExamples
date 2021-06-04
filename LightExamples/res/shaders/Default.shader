@@ -19,7 +19,6 @@ uniform mat4 u_normalModelMatrix;
 
 void main()
 {
-	//Normal = (u_normalMatrix * vec4(normal, 1.f)).xyz;
 	Normal = normalize((u_normalMatrix * (u_normalModelMatrix * vec4(normal, 1.f))).xyz);
 
 	Pos = (u_viewMatrix * u_modelMatrix * vec4(position, 1.0)).xyz;

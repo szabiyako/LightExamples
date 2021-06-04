@@ -1,9 +1,7 @@
 #pragma once
 
 #include "OpenGL/Texture/Texture.h"
-
 #include "LoadableData/Image/Image.h"
-
 #include <GL/glew.h>
 
 namespace Texture {
@@ -19,7 +17,7 @@ public:
 
 	virtual void setAnisotropicLevel(float level) override;
 
-	void loadFromData(const void* data, const int width, const int height, const GLint textureFromat = GL_RGBA8);
+	void loadFromData(const void* data, const int width, const int height, const GLint dataFromat = GL_RGBA, const GLint textureFromat = GL_RGBA8);
 	void loadFromImage(const Image &image, const GLint textureFromat = GL_RGBA8);
 };
 }

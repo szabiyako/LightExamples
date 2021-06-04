@@ -9,6 +9,8 @@ struct LoadableData
 		Image diffuse;
 		Image specular;
 		Image normal;
+
+		Image reflection;
 	};
 	struct PBR {
 		Image albedo;
@@ -16,6 +18,8 @@ struct LoadableData
 		Image roughness;
 		Image normal;
 		Image ao;
+
+		Image reflection;
 	};
 
 	ObjData objData;

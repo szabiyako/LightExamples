@@ -8,12 +8,14 @@
 void ImageTools::Import::fromFile(
 	Image& image,
 	const std::string& filePath,
-	std::string& errorMessage)
+	std::string& errorMessage,
+	const bool flipImage)
 {
 	Image imageToLoad;
 	errorMessage = std::string();
-	stbi_set_flip_vertically_on_load(true);
+	stbi_set_flip_vertically_on_load(flipImage);
 	unsigned char *localBuffer = stbi_load(filePath.c_str(), &imageToLoad.width, &imageToLoad.height, &imageToLoad.bitsPerPixel, 4);
+	imageToLoad.bitsPerPixel = 4;
 	if (localBuffer == nullptr) {
 		errorMessage = "Failed to import image \"" + filePath + "\"";
 		return;

@@ -10,7 +10,8 @@ namespace Import {
 void fromFile(
 	Image &image,
 	const std::string& filePath,
-	std::string& errorMessage);
+	std::string& errorMessage,
+	const bool flipImage = true);
 }
 }
 

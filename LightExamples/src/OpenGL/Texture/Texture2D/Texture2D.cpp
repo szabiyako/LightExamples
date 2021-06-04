@@ -1,7 +1,6 @@
 #include "Texture2D.h"
 
 #include "LoadableData/Image/Image.h"
-#include "LoadableData/Image/Tools/Import/Import.h"
 
 #include "OpenGL/ErrorHandler.h"
 
@@ -65,18 +64,18 @@ void Texture2D::setAnisotropicLevel(float level)
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, level);
 }
 
-void Texture2D::loadFromData(const void* data, const int width, const int height, const GLint textureFromat)
+void Texture2D::loadFromData(const void* data, const int width, const int height, const GLint dataFromat, const GLint textureFromat)
 {
 	bind();
 	m_width = width;
 	m_height = height;
-	//                               | Type output                   | Type input   | Data size per channel
-	//                          | level of detail 0 - max       | pixels in Border
-	glTexImage2D(GL_TEXTURE_2D, 0, textureFromat, m_width, m_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+	//                               | Type output                          | Type input   | Data size per channel
+	//                          | level of detail 0 - max            | pixels in Border
+	glTexImage2D(GL_TEXTURE_2D, 0, textureFromat, m_width, m_height, 0, dataFromat, GL_UNSIGNED_BYTE, data);
 	glGenerateMipmap(GL_TEXTURE_2D);
 }
 
 void Texture2D::loadFromImage(const Image& image, const GLint textureFromat)
 {
-	loadFromData(image.data.data(), image.width, image.height, textureFromat);
+	loadFromData(image.data.data(), image.width, image.height, GL_RGBA, textureFromat);
 }

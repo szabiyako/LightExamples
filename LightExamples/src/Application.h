@@ -55,8 +55,11 @@ class Application
 
 	// RenderingMenuData
 	RenderingType m_renderingType = RenderingType::DEFAULT;
+	std::vector<Image> m_skyboxImages;
+	Texture::CubeMap *m_skyboxCubeMap = nullptr;
 	unsigned int m_maxFPS = 0;
 	bool m_enableVSync = false;
+
 	bool m_lastEnableVSync = false;
 
 	// ObjectsMenuData

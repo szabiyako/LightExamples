@@ -276,7 +276,8 @@ Application::Application()
 	: m_window(nullptr),
 	  m_deltaTime(0.f),
 	  m_lastFrameTime(0.f),
-	  m_camera(glm::vec3(0.f, 0.f, 7.5f))
+	  m_camera(glm::vec3(0.f, 0.f, 7.5f)),
+	  m_skyboxImages(std::vector<Image>(6))
 {
 	//Init srand
 	std::srand(unsigned(std::time(0)));
@@ -293,7 +294,7 @@ Application::Application()
 	glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 	UI::DebugMenuDataRef debugMenuDataRef(m_enableFPScounter,m_enableCursor);
 	UI::CameraMenuDataRef cameraMenuDataRef(m_camera, m_cameraSpeed);
-	UI::RenderingMenuDataRef renderingMenuDataRef(m_renderingType, m_maxFPS, m_enableVSync);
+	UI::RenderingMenuDataRef renderingMenuDataRef(m_renderingType, m_skyboxImages, *m_skyboxCubeMap, m_maxFPS, m_enableVSync);
 	UI::ObjectsMenuDataRef objectsMenuDataRef(m_models, m_lightSources);
 	UI::LightsMenuDataRef lightsMenuDataRef(m_lightSources);
 	UI::DataRef dataRef(
@@ -305,11 +306,13 @@ Application::Application()
 		lightsMenuDataRef
 	);
 	m_ui = new UI::UI(m_window, dataRef);
+	m_skyboxCubeMap = new Texture::CubeMap();
 }
 
 Application::~Application()
 {
 	delete m_ui;
+	delete m_skyboxCubeMap;
 	const size_t nModels = m_models.size();
 	for (size_t modelIndex = 0; modelIndex < nModels; ++modelIndex) {
 		m_models[modelIndex].deleteDrawable();
@@ -324,26 +327,58 @@ Application::~Application()
 }
 
 #include "OpenGL/Texture/Texture2D/Texture2D.h"
+#include "OpenGL/Texture/CubeMap/CubeMap.h"
+#include "OpenGL/ErrorHandler.h"
 #include "LoadableData/Image/Tools/Import/Import.h"
 void Application::run()
 {
 	if (m_window == nullptr)
 		return;
 
-	float positions[192];
-	unsigned int indices[36];
-	unsigned int indicesSkybox[36];
+	float skyboxVertices[] = {
+		// positions          
+		-1.0f,  1.0f, -1.0f,
+		-1.0f, -1.0f, -1.0f,
+		 1.0f, -1.0f, -1.0f,
+		 1.0f, -1.0f, -1.0f,
+		 1.0f,  1.0f, -1.0f,
+		-1.0f,  1.0f, -1.0f,
 
-	{
-		auto pos = GetCubeVertex();
-		memcpy(positions, pos.data(), pos.size() * sizeof(float));
+		-1.0f, -1.0f,  1.0f,
+		-1.0f, -1.0f, -1.0f,
+		-1.0f,  1.0f, -1.0f,
+		-1.0f,  1.0f, -1.0f,
+		-1.0f,  1.0f,  1.0f,
+		-1.0f, -1.0f,  1.0f,
 
-		auto ind = GetCubeIndex();
-		memcpy(indices, ind.data(), ind.size() * sizeof(unsigned int));
+		 1.0f, -1.0f, -1.0f,
+		 1.0f, -1.0f,  1.0f,
+		 1.0f,  1.0f,  1.0f,
+		 1.0f,  1.0f,  1.0f,
+		 1.0f,  1.0f, -1.0f,
+		 1.0f, -1.0f, -1.0f,
 
-		ind = GetCubeIndex(1);
-		memcpy(indicesSkybox, ind.data(), ind.size() * sizeof(unsigned int));
-	}
+		-1.0f, -1.0f,  1.0f,
+		-1.0f,  1.0f,  1.0f,
+		 1.0f,  1.0f,  1.0f,
+		 1.0f,  1.0f,  1.0f,
+		 1.0f, -1.0f,  1.0f,
+		-1.0f, -1.0f,  1.0f,
+
+		-1.0f,  1.0f, -1.0f,
+		 1.0f,  1.0f, -1.0f,
+		 1.0f,  1.0f,  1.0f,
+		 1.0f,  1.0f,  1.0f,
+		-1.0f,  1.0f,  1.0f,
+		-1.0f,  1.0f, -1.0f,
+
+		-1.0f, -1.0f, -1.0f,
+		-1.0f, -1.0f,  1.0f,
+		 1.0f, -1.0f, -1.0f,
+		 1.0f, -1.0f, -1.0f,
+		-1.0f, -1.0f,  1.0f,
+		 1.0f, -1.0f,  1.0f
+	};
 
 	// Temp
 	int maxTextureSize = 0;
@@ -355,26 +390,28 @@ void Application::run()
 	glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, &textureUnitsFrag);
 	Console::print("Max textures in frag shader at once = " + std::to_string(textureUnitsFrag) + "\n");
 
-	{ ///START SCOPE
-		Texture::Texture2D skyboxTexture;
-		Image skyboxImage;
+	{ ///START SCOPE		
+		Shader shaderSky("res/shaders/Skybox1.shader");
 		std::string errorMessage;
-		ImageTools::Import::fromFile(skyboxImage, "res/textures/Skybox.png", errorMessage);
-		skyboxTexture.loadFromImage(skyboxImage);
+		ImageTools::Import::fromFile(m_skyboxImages[0], "res/textures/Skybox/right.jpg", errorMessage);
+		if (!errorMessage.empty()) std::cout << errorMessage << std::endl;
+		ImageTools::Import::fromFile(m_skyboxImages[1], "res/textures/Skybox/left.jpg", errorMessage);
+		if (!errorMessage.empty()) std::cout << errorMessage << std::endl;
+		ImageTools::Import::fromFile(m_skyboxImages[2], "res/textures/Skybox/bottom.jpg", errorMessage);
+		if (!errorMessage.empty()) std::cout << errorMessage << std::endl;
+		ImageTools::Import::fromFile(m_skyboxImages[3], "res/textures/Skybox/top.jpg", errorMessage);
+		if (!errorMessage.empty()) std::cout << errorMessage << std::endl;
+		ImageTools::Import::fromFile(m_skyboxImages[4], "res/textures/Skybox/front.jpg", errorMessage);
+		if (!errorMessage.empty()) std::cout << errorMessage << std::endl;
+		ImageTools::Import::fromFile(m_skyboxImages[5], "res/textures/Skybox/back.jpg", errorMessage);
+		if (!errorMessage.empty()) std::cout << errorMessage << std::endl;
+		m_skyboxCubeMap->loadFromImages(m_skyboxImages);
 
-		VertexArray va;
-		VertexBuffer vb(positions, 24 * 8 * sizeof(float));//coords buffer
-		VertexBufferLayout layout;
-		layout.Push<float>(3); // pos
-		layout.Push<float>(2); // texture coords
-		layout.Push<float>(3); // normale vectors
-		va.addBuffer(vb, layout);
-
-		IndexBuffer ib(indices, 36);//index buffer object
-		IndexBuffer ibSkybox(indicesSkybox, 36);//index buffer object
-
-		Shader shaderLight("res/shaders/LightSrc.shader");
-		Shader shaderSky("res/shaders/SkyBox.shader");
+		VertexArray vaSky;
+		VertexBuffer vbSky(skyboxVertices, 36 * 3 * sizeof(float));
+		VertexBufferLayout layoutSky;
+		layoutSky.Push<float>(3); // pos
+		vaSky.addBuffer(vbSky, layoutSky);
 
 		glm::mat4 oneM = glm::mat4(1.0f);
 
@@ -400,13 +437,16 @@ void Application::run()
 			m_lastEnableVSync = m_enableVSync;
 
 			//Draw Skybox
-
+			vaSky.bind();
+			shaderSky.bind();
+			shaderSky.setUniformMatrix4f("u_Model", glm::scale(glm::translate(oneM, glm::vec3(m_camera.getPos().x, m_camera.getPos().y, m_camera.getPos().z)), glm::vec3(900.0f, 900.0f, 900.0f)));
+			shaderSky.setUniformMatrix4f("u_ViewProj", m_camera.getViewProj());
+			shaderSky.setUniform1i("u_skybox", 0);
+			m_skyboxCubeMap->bind(0);
+			GLCall(glDrawArrays(GL_TRIANGLES, 0, 36));
+			m_skyboxCubeMap->unbind();
 			if (m_renderingType == RenderingType::DEFAULT || m_renderingType == RenderingType::DEFERRED) { // Ok for now
-				//Skybox
-				shaderSky.bind();
-				shaderSky.setUniformMatrix4f("u_Model", glm::scale(glm::translate(oneM, glm::vec3(m_camera.getPos().x, m_camera.getPos().y, m_camera.getPos().z)), glm::vec3(900.0f, 900.0f, 900.0f)));
-				shaderSky.setUniformMatrix4f("u_ViewProj", m_camera.getViewProj());
-				Renderer::draw(va, ibSkybox, shaderSky, skyboxTexture);
+				
 				//
 				for (size_t i = 0; i < m_lightSources.size(); ++i) {
 					// Creating shadow maps
