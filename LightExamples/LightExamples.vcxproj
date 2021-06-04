@@ -165,6 +165,7 @@
   <ItemGroup>
     <ClCompile Include="src\Model\Model.cpp" />
     <ClCompile Include="src\LightSrc\LightSrc.cpp" />
+    <ClCompile Include="src\OpenGL\Texture\Texture.cpp" />
     <ClCompile Include="src\UI\Elements\Menus\LightMenu.cpp" />
     <ClCompile Include="src\UI\MenuDataRef\LightsMenuDataRef.cpp" />
     <ClCompile Include="src\UI\Elements\Menus\LightsMenu.cpp" />
@@ -222,7 +223,7 @@
     <ClCompile Include="src\Main.cpp" />
     <ClCompile Include="src\OpenGL\VertexBuffer.cpp" />
     <ClCompile Include="src\OpenGL\VertexArray.cpp" />
-    <ClCompile Include="src\OpenGL\Texture.cpp" />
+    <ClCompile Include="src\OpenGL\Texture\RGBA8_2D\RGBA8_2D.cpp" />
     <ClCompile Include="src\UI\UI.cpp" />
     <ClCompile Include="src\UI\Element.cpp" />
   </ItemGroup>
@@ -236,6 +237,7 @@
   <ItemGroup>
     <ClInclude Include="src\Model\Model.h" />
     <ClInclude Include="src\LightSrc\LightSrc.h" />
+    <ClInclude Include="src\OpenGL\Texture\Texture.h" />
     <ClInclude Include="src\UI\Elements\Menus\LightMenu.h" />
     <ClInclude Include="src\UI\MenuDataRef\LightsMenuDataRef.h" />
     <ClInclude Include="src\UI\Elements\Menus\LightsMenu.h" />
@@ -297,7 +299,7 @@
     <ClInclude Include="src\OpenGL\VertexBuffer.h" />
     <ClInclude Include="src\OpenGL\VertexArray.h" />
     <ClInclude Include="src\OpenGL\VertexBufferLayout.h" />
-    <ClInclude Include="src\OpenGL\Texture.h" />
+    <ClInclude Include="src\OpenGL\Texture\RGBA8_2D\RGBA8_2D.h" />
     <ClInclude Include="src\UI\UI.h" />
     <ClInclude Include="src\UI\Element.h" />
     <ClInclude Include="src\RenderingType.h" />

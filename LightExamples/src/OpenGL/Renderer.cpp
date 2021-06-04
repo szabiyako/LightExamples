@@ -50,7 +50,7 @@ void Renderer::draw(const VertexArray & va, const IndexBuffer & ib, const Shader
 	GLCall(glDrawElements(GL_TRIANGLES, ib.getCount(), GL_UNSIGNED_INT, nullptr));
 }
 
-void Renderer::draw(const VertexArray & va, const IndexBuffer & ib, const Shader & shader, const Texture & texture)
+void Renderer::draw(const VertexArray & va, const IndexBuffer & ib, const Shader & shader, const Texture::Texture & texture)
 {
 	shader.bind();
 	va.bind();
@@ -60,7 +60,7 @@ void Renderer::draw(const VertexArray & va, const IndexBuffer & ib, const Shader
 	GLCall(glDrawElements(GL_TRIANGLES, ib.getCount(), GL_UNSIGNED_INT, nullptr));
 }
 
-void Renderer::drawInstanced(const VertexArray & va, const IndexBuffer & ib, const unsigned int & count, const Shader & shader, const Texture & texture)
+void Renderer::drawInstanced(const VertexArray & va, const IndexBuffer & ib, const unsigned int & count, const Shader & shader, const Texture::Texture & texture)
 {
 	shader.bind();
 	va.bind();

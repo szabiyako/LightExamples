@@ -323,6 +323,8 @@ Application::~Application()
 	glfwTerminate();
 }
 
+#include "OpenGL/Texture/RGBA8_2D/RGBA8_2D.h"
+#include "LoadableData/Image/Tools/Import/Import.h"
 void Application::run()
 {
 	if (m_window == nullptr)
@@ -354,8 +356,11 @@ void Application::run()
 	Console::print("Max textures in frag shader at once = " + std::to_string(textureUnitsFrag) + "\n");
 
 	{ ///START SCOPE
-		Texture emptyText(155, 155, 155);
-		Texture skyboxTexture("res/textures/Skybox.png");
+		Texture::RGBA8_2D skyboxTexture;
+		Image skyboxImage;
+		std::string errorMessage;
+		ImageTools::Import::fromFile(skyboxImage, "res/textures/Skybox.png", errorMessage);
+		skyboxTexture.loadFromImage(skyboxImage);
 
 		VertexArray va;
 		VertexBuffer vb(positions, 24 * 8 * sizeof(float));//coords buffer
@@ -394,6 +399,8 @@ void Application::run()
 			}
 			m_lastEnableVSync = m_enableVSync;
 
+			//Draw Skybox
+
 			if (m_renderingType == RenderingType::DEFAULT || m_renderingType == RenderingType::DEFERRED) { // Ok for now
 				//Skybox
 				shaderSky.bind();
@@ -403,6 +410,7 @@ void Application::run()
 				//
 				for (size_t i = 0; i < m_lightSources.size(); ++i) {
 					// Creating shadow maps
+					// Something like this: m_lightSources[i].createShadowMap(m_models);
 				}
 
 				for (size_t i = 0; i < m_models.size(); ++i)
@@ -413,7 +421,7 @@ void Application::run()
 
 				// Ambient Occlusion
 
-				// POSTFX
+				// POSTFX if there will be any
 			}
 
 			Renderer::draw(m_ui);

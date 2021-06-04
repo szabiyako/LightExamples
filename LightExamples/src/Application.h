@@ -14,7 +14,6 @@
 #include "opengl/IndexBuffer.h"
 #include "opengl/VertexArray.h"
 #include "opengl/Shader.h"
-#include "opengl/Texture.h"
 #include "Camera.h"
 
 #include "glm/glm.hpp"

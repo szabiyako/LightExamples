@@ -6,6 +6,8 @@
 #include "OpenGL/VertexBufferLayout.h"
 #include "OpenGL/IndexBuffer.h"
 
+//#include "OpenGL/Texture.h"
+
 //TMP
 #include "LoadableData/ObjData/ObjData.h"
 #include "Utils/NonCopyable.h"
@@ -27,4 +29,3 @@ public:
 	bool m_hasUVs = false;
 };
 }
-

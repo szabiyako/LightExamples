@@ -3,7 +3,7 @@
 #include "VertexArray.h"
 #include "IndexBuffer.h"
 #include "Shader.h"
-#include "Texture.h"
+#include "Texture/Texture.h"
 
 #include "Drawable/Drawable.h"
 
@@ -33,8 +33,8 @@ public:
 
 	//OLD STUFF
 	static void draw(const VertexArray& va, const IndexBuffer& ib, const Shader& shader);
-	static void draw(const VertexArray& va, const IndexBuffer& ib, const Shader& shader, const Texture& texture);
-	static void drawInstanced(const VertexArray& va, const IndexBuffer& ib, const unsigned int& count, const Shader& shader, const Texture& texture);
+	static void draw(const VertexArray& va, const IndexBuffer& ib, const Shader& shader, const Texture::Texture& texture);
+	static void drawInstanced(const VertexArray& va, const IndexBuffer& ib, const unsigned int& count, const Shader& shader, const Texture::Texture& texture);
 };
 
 

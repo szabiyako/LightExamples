@@ -13,6 +13,7 @@ static void SetParameters()
 
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LEQUAL); //for skybox (means depth less or equal)
+	//glDepthFunc(GL_LESS);
 	glEnable(GL_CULL_FACE);
 }
 
