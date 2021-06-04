@@ -2,7 +2,7 @@
 
 #include <string>
 
-class Image;
+struct Image;
 
 namespace ImageTools {
 namespace Import {

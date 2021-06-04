@@ -323,7 +323,7 @@ Application::~Application()
 	glfwTerminate();
 }
 
-#include "OpenGL/Texture/RGBA8_2D/RGBA8_2D.h"
+#include "OpenGL/Texture/Texture2D/Texture2D.h"
 #include "LoadableData/Image/Tools/Import/Import.h"
 void Application::run()
 {
@@ -356,7 +356,7 @@ void Application::run()
 	Console::print("Max textures in frag shader at once = " + std::to_string(textureUnitsFrag) + "\n");
 
 	{ ///START SCOPE
-		Texture::RGBA8_2D skyboxTexture;
+		Texture::Texture2D skyboxTexture;
 		Image skyboxImage;
 		std::string errorMessage;
 		ImageTools::Import::fromFile(skyboxImage, "res/textures/Skybox.png", errorMessage);
