@@ -297,7 +297,7 @@ Application::Application()
 
 	UI::DebugMenuDataRef debugMenuDataRef(m_enableFPScounter,m_enableCursor);
 	UI::CameraMenuDataRef cameraMenuDataRef(m_camera, m_cameraSpeed);
-	UI::RenderingMenuDataRef renderingMenuDataRef(m_renderingType, m_skyboxImages, *m_skyboxCubeMap, m_maxFPS, m_enableVSync);
+	UI::RenderingMenuDataRef renderingMenuDataRef(m_renderingType, m_skyboxImages, *m_skyboxCubeMap, m_enableVSync);
 	UI::ObjectsMenuDataRef objectsMenuDataRef(m_models, m_lightSources, *m_skyboxCubeMap);
 	UI::LightsMenuDataRef lightsMenuDataRef(m_lightSources);
 	UI::DataRef dataRef(

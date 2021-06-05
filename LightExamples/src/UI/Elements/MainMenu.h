@@ -35,9 +35,6 @@ private:
 	bool m_isLightsMenuOpened = false;
 	LightsMenu m_lightsMenu;
 
-	bool m_isAmbientOcclusionMenuOpened = false;
-	bool m_isPostFXMenuOpened = false;
-
 	//Temp
 	bool m_isDemoWindowOpened = false;
 };

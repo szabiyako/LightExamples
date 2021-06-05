@@ -30,7 +30,7 @@ void UI::MainMenu::process(const int windowWidth, const int windowHeight, bool &
 {
 	ImGui::SetNextWindowPos(ImVec2(0, 40), ImGuiCond_Once);
 	//ImGui::SetNextWindowSize(ImVec2(160, 145), ImGuiCond_Always);
-	ImGui::SetNextWindowSize(ImVec2(160, 215), ImGuiCond_Always);
+	ImGui::SetNextWindowSize(ImVec2(160, 170), ImGuiCond_Always);
 	ImGui::Begin("Menu", NULL, m_windowFlags);
 	ImGui::Checkbox("Debug menu", &m_isDebugMenuOpened);
 	m_debugMenu.process(windowWidth, windowHeight, enableKeysInput);
@@ -42,8 +42,6 @@ void UI::MainMenu::process(const int windowWidth, const int windowHeight, bool &
 	m_objectsMenu.process(windowWidth, windowHeight, enableKeysInput);
 	ImGui::Checkbox("Lights in scene", &m_isLightsMenuOpened);
 	m_lightsMenu.process(windowWidth, windowHeight, enableKeysInput);
-	ImGui::Checkbox("Ambient occlusion", &m_isAmbientOcclusionMenuOpened);
-	ImGui::Checkbox("PostFX", &m_isPostFXMenuOpened);
 
 	//Temp
 	ImGui::Checkbox("Demo window", &m_isDemoWindowOpened);

@@ -19,7 +19,7 @@ void UI::FPSCounter::process(const int windowWidth, const int windowHeight, bool
 	if (!m_show)
 		return;
 	ImGui::SetNextWindowPos(ImVec2(0, 0), ImGuiCond_Always);
-	ImGui::SetNextWindowSize(ImVec2(400, 400), ImGuiCond_Always);
+	ImGui::SetNextWindowSize(ImVec2(190, 29), ImGuiCond_Always);
 	ImGui::Begin("FPS", NULL, m_windowFlags);
 	ImGui::Text("%.0f FPS (%.3f ms/frame)", ImGui::GetIO().Framerate, 1000.0f / ImGui::GetIO().Framerate);
 	//ImGui::Text("%.0f FPS (%.3f ms/frame)", 1.0f / m_DeltaTime, double(m_DeltaTime * 1000));
