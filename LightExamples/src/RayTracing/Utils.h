@@ -21,6 +21,17 @@ namespace Utils
 
 	void BVHNodesToTexture(Texture::VertexTexture& bvhTexture, BVH::BVHBuilder& bvh);
 
-	void loadModelsToTexture(Texture::VertexTexture& vertexTexture, BVH::BVHBuilder& bvh, std::vector<Model>& models);
+	void loadModelsToTexture(
+		Texture::VertexTexture& vertexTexture,
+		Texture::VertexTexture& normalTexture,
+		BVH::BVHBuilder& bvh,
+		std::vector<Model>& models);
+
+	void fillBVH(
+		Texture::VertexTexture& vertexTexture,
+		Texture::VertexTexture& normalTexture,
+		Texture::VertexTexture& bvhTexture,
+		BVH::BVHBuilder& bvh,
+		std::vector<Model>& models);
 }
 

@@ -2,89 +2,6 @@
 
 #include "Utils/Console.h"
 
-//Temp static---------------------------------------------------------------
-#include <array>
-std::array<float, 192> GetCubeVertex()
-{
-	return {
-		// Position             UV             Normales
-		-0.5f, 0.5f, 0.5f,   0.f, 1.f,     0.f,  0.f,  1.f,  //0
-		 0.5f, 0.5f, 0.5f,   1.f, 1.f,     0.f,  0.f,  1.f,  //1   FRONT
-		-0.5f,-0.5f, 0.5f,   0.f, 0.f,     0.f,  0.f,  1.f,  //2
-		 0.5f,-0.5f, 0.5f,   1.f, 0.f,     0.f,  0.f,  1.f,  //3
-
-		-0.5f, 0.5f,-0.5f,   0.f, 1.f,    -1.f,  0.f,  0.f,  //4
-		-0.5f, 0.5f, 0.5f,   1.f, 1.f,    -1.f,  0.f,  0.f,  //5   LEFT
-		-0.5f,-0.5f,-0.5f,   0.f, 0.f,    -1.f,  0.f,  0.f,  //6
-		-0.5f,-0.5f, 0.5f,   1.f, 0.f,    -1.f,  0.f,  0.f,  //7
-
-		-0.5f, 0.5f,-0.5f,   0.f, 1.f,     0.f,  1.f,  0.f,  //8
-		 0.5f, 0.5f,-0.5f,   1.f, 1.f,     0.f,  1.f,  0.f,  //9   TOP
-		-0.5f, 0.5f, 0.5f,   0.f, 0.f,     0.f,  1.f,  0.f,  //10
-		 0.5f, 0.5f, 0.5f,   1.f, 0.f,     0.f,  1.f,  0.f,  //11
-
-		-0.5f,-0.5f, 0.5f,   0.f, 1.f,     0.f, -1.f,  0.f,  //12
-		 0.5f,-0.5f, 0.5f,   1.f, 1.f,     0.f, -1.f,  0.f,  //13  BOTTOM
-		-0.5f,-0.5f,-0.5f,   0.f, 0.f,     0.f, -1.f,  0.f,  //14
-		 0.5f,-0.5f,-0.5f,   1.f, 0.f,     0.f, -1.f,  0.f,  //15
-
-		 0.5f, 0.5f, 0.5f,   0.f, 1.f,     1.f,  0.f,  0.f,  //16
-		 0.5f, 0.5f,-0.5f,   1.f, 1.f,     1.f,  0.f,  0.f,  //17  RIGHT
-		 0.5f,-0.5f, 0.5f,   0.f, 0.f,     1.f,  0.f,  0.f,  //18
-		 0.5f,-0.5f,-0.5f,   1.f, 0.f,     1.f,  0.f,  0.f,  //19
-
-		 0.5f, 0.5f,-0.5f,   0.f, 1.f,     0.f,  0.f, -1.f,  //20
-		-0.5f, 0.5f,-0.5f,   1.f, 1.f,     0.f,  0.f, -1.f,  //21  BACK
-		 0.5f,-0.5f,-0.5f,   0.f, 0.f,     0.f,  0.f, -1.f,  //22
-		-0.5f,-0.5f,-0.5f,   1.f, 0.f,     0.f,  0.f, -1.f   //23
-	};
-}
-
-// 0 - cube, 1 - skybox
-std::array<unsigned int, 36> GetCubeIndex(int type = 0)
-{
-	if (type == 0)
-		return {
-			 0,  2,  1,//FRONT
-			 1,  2,  3,
-
-			 4,  6,  5,//LEFT
-			 5,  6,  7,
-
-			 8, 10,  9,//TOP
-			 9, 10, 11,
-
-			12, 14, 13,//BOTTOM
-			13, 14, 15,
-
-			16, 18, 17,//RIGHT
-			17, 18, 19,
-
-			20, 22, 21,//BACK
-			21, 22, 23
-		};
-	return {
-			0, 1, 2, //FRONT
-			1, 3, 2,
-
-			4, 5, 6, //LEFT
-			5, 7, 6,
-
-			8, 9, 10, //TOP
-			9, 11, 10,
-
-			12, 13, 14, //BOTTOM
-			13, 15, 14,
-
-			16, 17, 18, //RIGHT
-			17, 19, 18,
-
-			20, 21, 22, //BACK
-			21, 23, 22
-	};
-}
-//End temp static-------------------------------------------------
-
 void Application::updateDeltaTime()
 {
 	float currentFrame = (float)glfwGetTime();
@@ -106,8 +23,7 @@ void Application::processChanges()
 		if (m_bvh != nullptr)
 			delete m_bvh;
 		m_bvh = new BVH::BVHBuilder();
-		Utils::loadModelsToTexture(*m_vertexTexture, *m_bvh, m_models);
-		Utils::BVHNodesToTexture(*m_bvhTexture, *m_bvh);
+		Utils::fillBVH(*m_vertexTexture, *m_normalTexture, *m_bvhTexture, *m_bvh, m_models);
 	}
 	if (m_renderingType != RenderingType::RAYTRACING)
 		m_isBVHcreated = false;
@@ -317,6 +233,7 @@ Application::Application()
 
 	m_skyboxCubeMap = new Texture::CubeMap();
 	m_vertexTexture = new Texture::VertexTexture();
+	m_normalTexture = new Texture::VertexTexture();
 	m_bvhTexture = new Texture::VertexTexture();
 
 	UI::DebugMenuDataRef debugMenuDataRef(m_enableFPScounter,m_enableCursor);
@@ -343,6 +260,8 @@ Application::~Application()
 		delete m_bvh;
 	if (m_vertexTexture != nullptr)
 		delete m_vertexTexture;
+	if (m_normalTexture != nullptr)
+		delete m_normalTexture;
 	if (m_bvhTexture != nullptr)
 		delete m_bvhTexture;
 	const size_t nModels = m_models.size();
@@ -464,17 +383,18 @@ void Application::run()
 
 			processChanges();
 
-			//Draw Skybox
-			vaSky.bind();
-			shaderSky.bind();
-			shaderSky.setUniformMatrix4f("u_Model", glm::translate(oneM, glm::vec3(m_camera.getPos().x, m_camera.getPos().y, m_camera.getPos().z)));
-			shaderSky.setUniformMatrix4f("u_ViewProj", m_camera.getViewProj());
-			shaderSky.setUniform1i("u_skybox", 0);
-			m_skyboxCubeMap->bind(0);
-			GLCall(glDrawArrays(GL_TRIANGLES, 0, 36));
-			m_skyboxCubeMap->unbind();
-
 			if (m_renderingType == RenderingType::DEFAULT || m_renderingType == RenderingType::DEFERRED) { // Ok for now
+
+				//Draw Skybox
+				vaSky.bind();
+				shaderSky.bind();
+				shaderSky.setUniformMatrix4f("u_Model", glm::translate(oneM, glm::vec3(m_camera.getPos().x, m_camera.getPos().y, m_camera.getPos().z)));
+				shaderSky.setUniformMatrix4f("u_ViewProj", m_camera.getViewProj());
+				shaderSky.setUniform1i("u_skybox", 0);
+				m_skyboxCubeMap->bind(0);
+				GLCall(glDrawArrays(GL_TRIANGLES, 0, 36));
+				m_skyboxCubeMap->unbind();
+
 				const size_t nLightSources = m_lightSources.size();
 				const size_t nModels = m_models.size();
 				//
@@ -498,6 +418,8 @@ void Application::run()
 				rtShader.bind();
 				rtShader.setUniform1i("texPosition", 0);
 				rtShader.setUniform1i("texNode", 1);
+				rtShader.setUniform1i("u_skybox", 2);
+				rtShader.setUniform1i("u_normalTexture", 3);
 				rtShader.setUniformMatrix3f("viewToWorld", glm::transpose(m_camera.getView()));
 				rtShader.setUniformVec3f("location", m_camera.getPos());
 				int width, height;
@@ -507,6 +429,8 @@ void Application::run()
 				rtShader.setUniform1i("texPosWidth", m_vertexTexture->getWidth());
 				m_vertexTexture->bind(0);
 				m_bvhTexture->bind(1);
+				m_skyboxCubeMap->bind(2);
+				m_normalTexture->bind(3);
 				// Draw
 				glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 			}

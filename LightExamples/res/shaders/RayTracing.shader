@@ -38,6 +38,9 @@ uniform sampler2D texNode;
 uniform int bvhWidth;
 uniform int texPosWidth;
 
+uniform samplerCube u_skybox;
+uniform sampler2D u_normalTexture;
+
 
 //------------------- STRUCT AND LOADER BEGIN -----------------------
 struct Triangle
@@ -46,6 +49,11 @@ struct Triangle
     vec3 pos1;
     vec3 pos2;
     vec3 pos3;
+
+    // Normal
+    vec3 norm1;
+    vec3 norm2;
+    vec3 norm3;
 };
 struct Node
 {
@@ -104,6 +112,10 @@ Triangle getTriangle(int index)
 	triangle.pos1 = texture(texPosition, get2DIndex(index, texPosWidth)).rgb;
 	triangle.pos2 = texture(texPosition, get2DIndex(index + 1, texPosWidth)).rgb;
 	triangle.pos3 = texture(texPosition, get2DIndex(index + 2, texPosWidth)).rgb;
+
+	triangle.norm1 = texture(u_normalTexture, get2DIndex(index, texPosWidth)).rgb;
+	triangle.norm2 = texture(u_normalTexture, get2DIndex(index + 1, texPosWidth)).rgb;
+	triangle.norm3 = texture(u_normalTexture, get2DIndex(index + 2, texPosWidth)).rgb;
 	return triangle;
 }
 //------------------- STRUCT AND LOADER END -----------------------
@@ -180,7 +192,8 @@ bool isect_tri(inout Ray ray, in Triangle tri, inout Hit hit ) {
     {
         vec3 c = vec3(u, v, 1.0 - u - v);
         countTI++;
-        hit.normal = normalize(cross(e1, e2));//(tri.norm1 * c.z + tri.norm2 * c.x + tri.norm3 * c.y);
+        hit.normal = (tri.norm1 * c.z + tri.norm2 * c.x + tri.norm3 * c.y);
+        //OLD// hit.normal = normalize(cross(e1, e2));//(tri.norm1 * c.z + tri.norm2 * c.x + tri.norm3 * c.y);
         //chit.uv = tri.uv1 * c.z + tri.uv2 * c.x + tri.uv3 * c.y;
         hit.position = (ray.origin + ray.direction * tt);
         hit.isHit = true;
@@ -299,7 +312,7 @@ void main() {
     ray.tStart = 0.0001;
     ray.tEnd = 10000;
 
-    const float offset = 0.01;
+    const float offset = 0.0001;
 
     Hit hit;
     //traceCloseFor(ray, hit);
@@ -308,16 +321,17 @@ void main() {
 //    color = vec4(0.5+hit.normal*0.5, 1.0);
 
 	if (!hit.isHit) {
-        discard;
-		color = vec4(0.5, 0.5, 0.5, 1.0);
-		return;
+        //discard;
+        vec3 skyBoxPos = vec3(ray.direction.x, -ray.direction.y, ray.direction.z);
+        color = texture(u_skybox, skyBoxPos);
+        return;
 	}
 
 	//Light ray
 	const vec3 lightPos = vec3(-50, 100, 5);
 	Ray lightRay;
 	lightRay.direction = normalize(lightPos - hit.position);
-	lightRay.origin = hit.position + lightRay.direction * offset;
+	lightRay.origin = hit.position + hit.normal * offset;
 	lightRay.tStart = 0.0001;
 	lightRay.tEnd = length(lightPos - hit.position);
 	
@@ -332,19 +346,17 @@ void main() {
 	//Second ray
 	Ray ray2;
 	ray2.direction = reflect(ray.direction, hit.normal);
-    ray2.origin = hit.position + ray2.direction * offset;
+    ray2.origin = hit.position + hit.normal * offset;
     ray2.tStart = 0.0001;
     ray2.tEnd = 10000;
 	
 	Hit hit2;
 	traceCloseHitV2(ray2, hit2);
 	
-	//vec4 hitColor2 = vec4(vec3(1, 1, 1) * dot(hit2.normal, ray2.direction), 1);
-	
-	//Light ray
+	//Light ray 2
 	Ray lightRay2;
 	lightRay2.direction = normalize(lightPos - hit2.position);
-	lightRay2.origin = hit2.position + lightRay2.direction * offset;
+	lightRay2.origin = hit2.position + hit2.normal * offset;
 	lightRay2.tStart = 0.0001;
 	lightRay2.tEnd = length(lightPos - hit2.position);
 	
@@ -352,6 +364,12 @@ void main() {
 	traceCloseHitV2(lightRay2, lightHit2);
 	
 	vec4 hitColor2 = vec4(vec3(1, 1, 1) * dot(hit2.normal, lightRay2.direction), 1);
+
+    if (!hit2.isHit) {
+        vec3 skyBoxPos = vec3(ray2.direction.x, -ray2.direction.y, ray2.direction.z);
+        hitColor2 = texture(u_skybox, skyBoxPos);
+    }
+
 	if (lightHit.isHit)
 		hitColor2 = vec4(hitColor2.xyz / 2, 1);
 	

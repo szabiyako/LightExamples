@@ -15,6 +15,7 @@ std::vector<int> buildTriangleVertexIndices(const std::vector<int>& polygonIndic
 std::vector<float> packTriangleVertexCoords(const std::vector<glm::vec3>& vertices, const std::vector<int>& triangleVertexIndices);
 std::vector<float> packUVs(const std::vector<glm::vec2>& uvs, const std::vector<int>& triangleUVsIndices);
 
+std::vector<float> buildRawData(const ObjData& objData);
 }
 }
 
