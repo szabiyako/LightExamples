@@ -19,5 +19,7 @@ public:
 
 	void loadFromData(const void* data, const int width, const int height, const GLint dataFromat = GL_RGBA, const GLint textureFromat = GL_RGBA8);
 	void loadFromImage(const Image &image, const GLint textureFromat = GL_RGBA8);
+private:
+	virtual void setupParams();
 };
 }

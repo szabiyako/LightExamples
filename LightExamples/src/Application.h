@@ -34,6 +34,9 @@
 #include "Model/Model.h"
 #include "LightSrc/LightSrc.h"
 
+#include "RayTracing/BVHBuilder.h"
+#include "OpenGL/Texture/VertexTexture/VertexTexture.h"
+
 class Application
 {
 	GLFWwindow *m_window = nullptr;
@@ -44,6 +47,11 @@ class Application
 	float m_lastFrameTime;
 
 	bool m_enableKeysInput = true;
+
+	// RayTracing Data
+	BVH::BVHBuilder* m_bvh = nullptr;
+	Texture::VertexTexture *m_vertexTexture = nullptr;
+	Texture::VertexTexture *m_bvhTexture = nullptr;
 
 	// DebugMenuData
 	bool m_enableFPScounter = true;
@@ -62,6 +70,7 @@ class Application
 	bool m_enableSSAO = false;
 
 	bool m_lastEnableVSync = false;
+	bool m_isBVHcreated = false;
 
 	// ObjectsMenuData
 	std::vector<Model> m_models;
@@ -79,6 +88,8 @@ class Application
 
 
 	void updateDeltaTime();
+
+	void processChanges();
 
 	//Callback functions
 	void window_size_callback(GLFWwindow* window, int width, int height);

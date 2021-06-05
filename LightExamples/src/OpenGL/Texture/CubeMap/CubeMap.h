@@ -31,5 +31,7 @@ public:
 	* back
 	*/
 	void loadFromImages(const std::vector<Image>& images, const GLint textureFromat = GL_RGBA8);
+private:
+	virtual void setupParams();
 };
 }

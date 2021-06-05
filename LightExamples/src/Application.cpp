@@ -91,6 +91,28 @@ void Application::updateDeltaTime()
 	m_deltaTime = currentFrame - m_lastFrameTime;
 	m_lastFrameTime = currentFrame;
 }
+#include "RayTracing/Utils.h"
+void Application::processChanges()
+{
+	if (m_enableVSync != m_lastEnableVSync) {
+		Console::print(std::string("VSync ") + (m_enableVSync ? "enabled\n" : "disabled\n"));
+		glfwSwapInterval(m_enableVSync);
+	}
+	m_lastEnableVSync = m_enableVSync;
+	if ((m_renderingType == RenderingType::RAYTRACING)
+		&& !m_isBVHcreated) {
+		m_isBVHcreated = true;
+		//Create BVH
+		if (m_bvh != nullptr)
+			delete m_bvh;
+		m_bvh = new BVH::BVHBuilder();
+		Utils::loadModelsToTexture(*m_vertexTexture, *m_bvh, m_models);
+		Utils::BVHNodesToTexture(*m_bvhTexture, *m_bvh);
+	}
+	if (m_renderingType != RenderingType::RAYTRACING)
+		m_isBVHcreated = false;
+
+}
 
 
 void Application::window_size_callback(GLFWwindow * window, int width, int height)
@@ -294,6 +316,8 @@ Application::Application()
 	glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
 	m_skyboxCubeMap = new Texture::CubeMap();
+	m_vertexTexture = new Texture::VertexTexture();
+	m_bvhTexture = new Texture::VertexTexture();
 
 	UI::DebugMenuDataRef debugMenuDataRef(m_enableFPScounter,m_enableCursor);
 	UI::CameraMenuDataRef cameraMenuDataRef(m_camera, m_cameraSpeed, m_cameraSensitivity);
@@ -315,6 +339,12 @@ Application::~Application()
 {
 	delete m_ui;
 	delete m_skyboxCubeMap;
+	if (m_bvh != nullptr)
+		delete m_bvh;
+	if (m_vertexTexture != nullptr)
+		delete m_vertexTexture;
+	if (m_bvhTexture != nullptr)
+		delete m_bvhTexture;
 	const size_t nModels = m_models.size();
 	for (size_t modelIndex = 0; modelIndex < nModels; ++modelIndex) {
 		m_models[modelIndex].deleteDrawable();
@@ -392,6 +422,18 @@ void Application::run()
 	glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, &textureUnitsFrag);
 	Console::print("Max textures in frag shader at once = " + std::to_string(textureUnitsFrag) + "\n");
 
+	Shader rtShader("res/shaders/RayTracing.shader");
+	Shader textureShader("res/shaders/TextureTestShader.shader");
+	float rtvertices[] = {
+		-1, -1,
+		1, 1,
+		-1, 1,
+
+		-1, -1,
+		1, -1,
+		1, 1
+	};
+	VertexArray rtva;
 	{ ///START SCOPE		
 		Shader shaderSky("res/shaders/Skybox.shader");
 		m_skyboxCubeMap->loadFromColor(glm::vec3(0.10f, 0.10f, 0.10f));
@@ -419,11 +461,8 @@ void Application::run()
 			if (showCursor) {
 				m_ui->process();
 			}
-			if (m_enableVSync != m_lastEnableVSync) {
-				Console::print(std::string("VSync ") + (m_enableVSync ? "enabled\n" : "disabled\n"));
-				glfwSwapInterval(m_enableVSync);
-			}
-			m_lastEnableVSync = m_enableVSync;
+
+			processChanges();
 
 			//Draw Skybox
 			vaSky.bind();
@@ -453,6 +492,23 @@ void Application::run()
 				// Ambient Occlusion
 
 				// POSTFX if there will be any
+			}
+			if (m_renderingType == RenderingType::RAYTRACING) {
+				rtva.bind();
+				rtShader.bind();
+				rtShader.setUniform1i("texPosition", 0);
+				rtShader.setUniform1i("texNode", 1);
+				rtShader.setUniformMatrix3f("viewToWorld", glm::transpose(m_camera.getView()));
+				rtShader.setUniformVec3f("location", m_camera.getPos());
+				int width, height;
+				glfwGetWindowSize(m_window, &width, &height);
+				rtShader.setUniformVec2f("screeResolution", glm::vec2(width, height));
+				rtShader.setUniform1i("bvhWidth", m_bvhTexture->getWidth());
+				rtShader.setUniform1i("texPosWidth", m_vertexTexture->getWidth());
+				m_vertexTexture->bind(0);
+				m_bvhTexture->bind(1);
+				// Draw
+				glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 			}
 
 			Renderer::draw(m_ui);

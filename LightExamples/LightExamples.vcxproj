@@ -163,10 +163,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\LoadableData\ObjData\Tools\Data.cpp" />
     <ClCompile Include="src\OpenGL\Texture\CubeMap\CubeMap.cpp" />
     <ClCompile Include="src\Model\Model.cpp" />
     <ClCompile Include="src\LightSrc\LightSrc.cpp" />
     <ClCompile Include="src\OpenGL\Texture\Texture.cpp" />
+    <ClCompile Include="src\OpenGL\Texture\VertexTexture\VertexTexture.cpp" />
+    <ClCompile Include="src\RayTracing\BVHBuilder.cpp" />
     <ClCompile Include="src\UI\Elements\Menus\LightMenu.cpp" />
     <ClCompile Include="src\UI\MenuDataRef\LightsMenuDataRef.cpp" />
     <ClCompile Include="src\UI\Elements\Menus\LightsMenu.cpp" />
@@ -227,16 +230,22 @@
     <ClCompile Include="src\OpenGL\Texture\Texture2D\Texture2D.cpp" />
     <ClCompile Include="src\UI\UI.cpp" />
     <ClCompile Include="src\UI\Element.cpp" />
+    <ClCompile Include="src\RayTracing\Utils.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="res\shaders\Default.shader" />
+    <None Include="res\shaders\RayTracing.shader" />
     <None Include="res\shaders\Skybox.shader" />
+    <None Include="res\shaders\TextureTestShader.shader" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\LoadableData\ObjData\Tools\Data.h" />
     <ClInclude Include="src\OpenGL\Texture\CubeMap\CubeMap.h" />
     <ClInclude Include="src\Model\Model.h" />
     <ClInclude Include="src\LightSrc\LightSrc.h" />
     <ClInclude Include="src\OpenGL\Texture\Texture.h" />
+    <ClInclude Include="src\OpenGL\Texture\VertexTexture\VertexTexture.h" />
+    <ClInclude Include="src\RayTracing\BVHBuilder.h" />
     <ClInclude Include="src\UI\Elements\Menus\LightMenu.h" />
     <ClInclude Include="src\UI\MenuDataRef\LightsMenuDataRef.h" />
     <ClInclude Include="src\UI\Elements\Menus\LightsMenu.h" />
@@ -302,6 +311,7 @@
     <ClInclude Include="src\UI\UI.h" />
     <ClInclude Include="src\UI\Element.h" />
     <ClInclude Include="src\RenderingType.h" />
+    <ClInclude Include="src\RayTracing\Utils.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\textures\Dirt.png" />

@@ -11,14 +11,7 @@ CubeMap::CubeMap()
 	glGenTextures(1, &m_id);
 	glBindTexture(GL_TEXTURE_CUBE_MAP, m_id);
 
-	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
-
-	setAnisotropicLevel(getMaxAnisotropicLevel());
-
-	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+	setupParams();
 
 	glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
 }
@@ -62,6 +55,7 @@ void CubeMap::loadFromColor(const glm::vec3& color)
 			0, GL_RGBA8, (GLsizei)m_width, (GLsizei)m_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, colorData
 		);
 	}
+	setupParams();
 	glGenerateMipmap(GL_TEXTURE_CUBE_MAP);
 }
 
@@ -79,5 +73,18 @@ void CubeMap::loadFromImages(const std::vector<Image>& images, const GLint textu
 			0, textureFromat, m_width, m_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, images[i].data.data()
 		);
 	}
+	setupParams();
 	glGenerateMipmap(GL_TEXTURE_CUBE_MAP);
+}
+
+void CubeMap::setupParams()
+{
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+
+	setAnisotropicLevel(getMaxAnisotropicLevel());
+
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 }
