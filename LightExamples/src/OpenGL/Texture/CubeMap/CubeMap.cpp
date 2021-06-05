@@ -47,6 +47,7 @@ void CubeMap::setAnisotropicLevel(float level)
 
 void CubeMap::loadFromColor(const glm::vec3& color)
 {
+	bind();
 	unsigned int width = 1, height = 1;
 	unsigned char colorData[4] = { 
 		unsigned char(glm::clamp(color.x, 0.f, 1.f) * 255),

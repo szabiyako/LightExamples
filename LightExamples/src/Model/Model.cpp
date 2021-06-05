@@ -13,8 +13,11 @@
 
 #include "LightSrc/LightSrc.h"
 
-Model::Model(std::vector<LightSrc> *lightSources)
-	: m_lightSources(lightSources)
+Model::Model(
+	std::vector<LightSrc> *lightSources,
+	Texture::CubeMap *skyboxCubeMap)
+	: m_lightSources(lightSources),
+	  m_skyboxCubeMap(skyboxCubeMap)
 {
 }
 

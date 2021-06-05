@@ -292,10 +292,13 @@ Application::Application()
 
 	//Set Mouse mode
 	glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+
+	m_skyboxCubeMap = new Texture::CubeMap();
+
 	UI::DebugMenuDataRef debugMenuDataRef(m_enableFPScounter,m_enableCursor);
 	UI::CameraMenuDataRef cameraMenuDataRef(m_camera, m_cameraSpeed);
 	UI::RenderingMenuDataRef renderingMenuDataRef(m_renderingType, m_skyboxImages, *m_skyboxCubeMap, m_maxFPS, m_enableVSync);
-	UI::ObjectsMenuDataRef objectsMenuDataRef(m_models, m_lightSources);
+	UI::ObjectsMenuDataRef objectsMenuDataRef(m_models, m_lightSources, *m_skyboxCubeMap);
 	UI::LightsMenuDataRef lightsMenuDataRef(m_lightSources);
 	UI::DataRef dataRef(
 		m_enableKeysInput,
@@ -306,7 +309,6 @@ Application::Application()
 		lightsMenuDataRef
 	);
 	m_ui = new UI::UI(m_window, dataRef);
-	m_skyboxCubeMap = new Texture::CubeMap();
 }
 
 Application::~Application()
@@ -391,21 +393,8 @@ void Application::run()
 	Console::print("Max textures in frag shader at once = " + std::to_string(textureUnitsFrag) + "\n");
 
 	{ ///START SCOPE		
-		Shader shaderSky("res/shaders/Skybox1.shader");
-		std::string errorMessage;
-		ImageTools::Import::fromFile(m_skyboxImages[0], "res/textures/Skybox/right.jpg", errorMessage);
-		if (!errorMessage.empty()) std::cout << errorMessage << std::endl;
-		ImageTools::Import::fromFile(m_skyboxImages[1], "res/textures/Skybox/left.jpg", errorMessage);
-		if (!errorMessage.empty()) std::cout << errorMessage << std::endl;
-		ImageTools::Import::fromFile(m_skyboxImages[2], "res/textures/Skybox/bottom.jpg", errorMessage);
-		if (!errorMessage.empty()) std::cout << errorMessage << std::endl;
-		ImageTools::Import::fromFile(m_skyboxImages[3], "res/textures/Skybox/top.jpg", errorMessage);
-		if (!errorMessage.empty()) std::cout << errorMessage << std::endl;
-		ImageTools::Import::fromFile(m_skyboxImages[4], "res/textures/Skybox/front.jpg", errorMessage);
-		if (!errorMessage.empty()) std::cout << errorMessage << std::endl;
-		ImageTools::Import::fromFile(m_skyboxImages[5], "res/textures/Skybox/back.jpg", errorMessage);
-		if (!errorMessage.empty()) std::cout << errorMessage << std::endl;
-		m_skyboxCubeMap->loadFromImages(m_skyboxImages);
+		Shader shaderSky("res/shaders/Skybox.shader");
+		m_skyboxCubeMap->loadFromColor(glm::vec3(0.10f, 0.10f, 0.10f));
 
 		VertexArray vaSky;
 		VertexBuffer vbSky(skyboxVertices, 36 * 3 * sizeof(float));
@@ -413,7 +402,7 @@ void Application::run()
 		layoutSky.Push<float>(3); // pos
 		vaSky.addBuffer(vbSky, layoutSky);
 
-		glm::mat4 oneM = glm::mat4(1.0f);
+		const glm::mat4 oneM = glm::mat4(1.0f);
 
 		while (!glfwWindowShouldClose(m_window))
 		{
@@ -439,24 +428,26 @@ void Application::run()
 			//Draw Skybox
 			vaSky.bind();
 			shaderSky.bind();
-			shaderSky.setUniformMatrix4f("u_Model", glm::scale(glm::translate(oneM, glm::vec3(m_camera.getPos().x, m_camera.getPos().y, m_camera.getPos().z)), glm::vec3(900.0f, 900.0f, 900.0f)));
+			shaderSky.setUniformMatrix4f("u_Model", glm::translate(oneM, glm::vec3(m_camera.getPos().x, m_camera.getPos().y, m_camera.getPos().z)));
 			shaderSky.setUniformMatrix4f("u_ViewProj", m_camera.getViewProj());
 			shaderSky.setUniform1i("u_skybox", 0);
 			m_skyboxCubeMap->bind(0);
 			GLCall(glDrawArrays(GL_TRIANGLES, 0, 36));
 			m_skyboxCubeMap->unbind();
+
 			if (m_renderingType == RenderingType::DEFAULT || m_renderingType == RenderingType::DEFERRED) { // Ok for now
-				
+				const size_t nLightSources = m_lightSources.size();
+				const size_t nModels = m_models.size();
 				//
-				for (size_t i = 0; i < m_lightSources.size(); ++i) {
+				for (size_t i = 0; i < nLightSources; ++i) {
 					// Creating shadow maps
 					// Something like this: m_lightSources[i].createShadowMap(m_models);
 				}
 
-				for (size_t i = 0; i < m_models.size(); ++i)
+				for (size_t i = 0; i < nModels; ++i)
 					Renderer::draw(m_models[i].getDrawable(), m_models[i].getModelMatrix(), m_camera.getView(), m_camera.getProj());
 
-				for (size_t i = 0; i < m_lightSources.size(); ++i)
+				for (size_t i = 0; i < nLightSources; ++i)
 					Renderer::draw(m_lightSources[i].getDrawable(), m_lightSources[i].getModelMatrix(), m_camera.getView(), m_camera.getProj());
 
 				// Ambient Occlusion

@@ -2,6 +2,7 @@
 
 #include "LoadableData/LoadableData.h"
 #include "Drawable/Drawable.h"
+#include "OpenGL/Texture/CubeMap/CubeMap.h"
 #include "glm/glm.hpp"
 
 class LightSrc;
@@ -19,7 +20,9 @@ public:
 		RAYTRACING
 	};
 
-	Model(std::vector<LightSrc> *lightSources = nullptr);
+	Model(
+		std::vector<LightSrc> *lightSources = nullptr,
+		Texture::CubeMap *skyboxCubeMap = nullptr);
 	~Model();
 	void deleteDrawable();
 
@@ -47,6 +50,7 @@ private:
 	Drawable m_drawable;
 
 	std::vector<LightSrc> *m_lightSources;
+	Texture::CubeMap *m_skyboxCubeMap;
 
 	RenderType m_renderType = RenderType::DEFAULT;
 

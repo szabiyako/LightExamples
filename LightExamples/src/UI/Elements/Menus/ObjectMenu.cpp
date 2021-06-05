@@ -77,6 +77,12 @@ void UI::ObjectMenu::process(const int windowWidth, const int windowHeight, bool
 			float color[3] = { currentColor.x, currentColor.y, currentColor.z };
 			ImGui::ColorEdit3("Color", color);
 
+			const bool hasUVs = !m_model->getLoadableDataRef().objData.indices.uv.empty();
+			if (hasUVs) {
+				bool a = true;
+				ImGui::Checkbox("Has UVs", &a);
+			}
+
 			m_model->setVisible(isVisible);
 			defaultPipeline->setCullFace(cullFace);
 			m_model->setColor(glm::vec3(color[0], color[1], color[2]));

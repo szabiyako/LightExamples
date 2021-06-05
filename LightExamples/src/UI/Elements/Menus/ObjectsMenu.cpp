@@ -40,7 +40,7 @@ void UI::ObjectsMenu::process(const int windowWidth, const int windowHeight, boo
 	ImGui::Begin("Objects menu", &m_isOpen, m_windowFlags);
 	if (ImGui::Button("Add Object")) {
 		m_showObjectMenu.push_back(false);
-		m_dataRef.models.push_back(Model(&m_dataRef.lightSources));
+		m_dataRef.models.push_back(Model(&m_dataRef.lightSources, &m_dataRef.skyboxCubeMap));
 		if (nObjects != 0) {
 			ImVec2 newPos = m_objectMenus[nObjects - 1].getWindowPos();
 			newPos.x += 195;

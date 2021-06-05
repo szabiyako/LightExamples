@@ -230,7 +230,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="res\shaders\Default.shader" />
-    <None Include="res\shaders\Skybox1.shader" />
+    <None Include="res\shaders\Skybox.shader" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\OpenGL\Texture\CubeMap\CubeMap.h" />
