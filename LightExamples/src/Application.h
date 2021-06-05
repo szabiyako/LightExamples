@@ -52,12 +52,14 @@ class Application
 	// CameraMenuData
 	Camera m_camera;
 	float m_cameraSpeed = 40.f;
+	float m_cameraSensitivity = 0.05f;
 
 	// RenderingMenuData
 	RenderingType m_renderingType = RenderingType::DEFAULT;
 	std::vector<Image> m_skyboxImages;
 	Texture::CubeMap *m_skyboxCubeMap = nullptr;
 	bool m_enableVSync = false;
+	bool m_enableSSAO = false;
 
 	bool m_lastEnableVSync = false;
 

@@ -27,11 +27,15 @@ void UI::CameraMenu::process(const int windowWidth, const int windowHeight, bool
 	loadCameraData();
 
 	ImGui::SetNextWindowPos(ImVec2(330, 40), ImGuiCond_Once);
-	ImGui::SetNextWindowSize(ImVec2(145, 342), ImGuiCond_Always);
+	ImGui::SetNextWindowSize(ImVec2(145, 384), ImGuiCond_Always);
 	ImGui::Begin("Camera", &m_isOpen, m_windowFlags);
 	ImGui::DragFloat("speed", &m_dataRef.cameraSpeed, 0.05f);
 	if (ImGui::Button("reset##speed", ImVec2(130, 18))) {
 		m_dataRef.cameraSpeed = 40.f;
+	}
+	ImGui::DragFloat("sens", &m_dataRef.cameraSensitivity, 0.001f);
+	if (ImGui::Button("reset##sensitivity", ImVec2(130, 18))) {
+		m_dataRef.cameraSensitivity = 0.05f;
 	}
 	ImGui::Text("View params:");
 	ImGui::DragFloat("x", &m_pos.x, 0.05f);

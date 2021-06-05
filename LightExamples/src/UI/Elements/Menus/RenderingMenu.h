@@ -13,6 +13,7 @@ public:
 	RenderingMenu(bool& isOpen, const RenderingMenuDataRef &dataRef);
 	void process(const int windowWidth, const int windowHeight, bool& enableKeysInput) override;
 private:
+	void backgroundHeader();
 	void loadCubeMapTexturefileDialog(const size_t textureIndex);
 	void applyCubeMap();
 	static std::string getRenderTypeAsString(const RenderingType &renderingType);

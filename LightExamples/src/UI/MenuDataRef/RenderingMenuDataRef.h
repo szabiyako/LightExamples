@@ -12,11 +12,13 @@ struct RenderingMenuDataRef
 	std::vector<Image> &skyboxImages;
 	Texture::CubeMap &skyboxCubeMap;
 	bool &enableVSync;
+	bool &enableSSAO;
 	
 	RenderingMenuDataRef(
 		RenderingType &renderingType,
 		std::vector<Image> &skyboxImages,
 		Texture::CubeMap &skyboxCubeMap,
-		bool &enableVSync);
+		bool &enableVSync,
+		bool &enableSSAO);
 };
 }

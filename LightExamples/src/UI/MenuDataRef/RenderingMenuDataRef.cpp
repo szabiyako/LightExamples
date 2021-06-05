@@ -4,10 +4,12 @@ UI::RenderingMenuDataRef::RenderingMenuDataRef(
 	RenderingType& renderingType,
 	std::vector<Image> &skyboxImages,
 	Texture::CubeMap &skyboxCubeMap,
-	bool& enableVSync)
+	bool& enableVSync,
+	bool &enableSSAO)
 	: renderingType(renderingType),
 	  skyboxImages(skyboxImages),
 	  skyboxCubeMap(skyboxCubeMap),
-	  enableVSync(enableVSync)
+	  enableVSync(enableVSync),
+	  enableSSAO(enableSSAO)
 {
 }

@@ -42,59 +42,18 @@ void UI::RenderingMenu::process(const int windowWidth, const int windowHeight, b
 		ImGui::EndPopup();
 	}
 	if (ImGui::CollapsingHeader("Background")) {
-		ImGui::Checkbox("use Cube map", &m_useCubeMap);
-		if (m_useCubeMap) {
-			ImGui::Text("Right");
-			ImGui::SameLine();
-			if (ImGui::Button(m_cubeMapImageFileNames[0].c_str()))
-				ImGuiFileDialog::Instance()->OpenDialog("ChooseImageCubeMap_Right", "Choose a Right texture", ".jpg,.jpeg,.png", ".");
-			ImGui::Text("Left");
-			ImGui::SameLine();
-			if (ImGui::Button(m_cubeMapImageFileNames[1].c_str()))
-				ImGuiFileDialog::Instance()->OpenDialog("ChooseImageCubeMap_Left", "Choose a Left texture", ".jpg,.jpeg,.png", ".");
-			ImGui::Text("Bottom");
-			ImGui::SameLine();
-			if (ImGui::Button(m_cubeMapImageFileNames[2].c_str()))
-				ImGuiFileDialog::Instance()->OpenDialog("ChooseImageCubeMap_Bottom", "Choose a Bottom texture", ".jpg,.jpeg,.png", ".");
-			ImGui::Text("Top");
-			ImGui::SameLine();
-			if (ImGui::Button(m_cubeMapImageFileNames[3].c_str()))
-				ImGuiFileDialog::Instance()->OpenDialog("ChooseImageCubeMap_Top", "Choose a Top texture", ".jpg,.jpeg,.png", ".");
-			ImGui::Text("Front");
-			ImGui::SameLine();
-			if (ImGui::Button(m_cubeMapImageFileNames[4].c_str()))
-				ImGuiFileDialog::Instance()->OpenDialog("ChooseImageCubeMap_Front", "Choose a Front texture", ".jpg,.jpeg,.png", ".");
-			ImGui::Text("Back");
-			ImGui::SameLine();
-			if (ImGui::Button(m_cubeMapImageFileNames[5].c_str()))
-				ImGuiFileDialog::Instance()->OpenDialog("ChooseImageCubeMap_Back", "Choose a Back texture", ".jpg,.jpeg,.png", ".");
-			if (ImGui::Button("Load default Cube map")) {
-				std::string errorMessage;
-				ImageTools::Import::fromFile(m_dataRef.skyboxImages[0], "res/textures/Skybox/right.jpg", errorMessage);
-				ImageTools::Import::fromFile(m_dataRef.skyboxImages[1], "res/textures/Skybox/left.jpg", errorMessage);
-				ImageTools::Import::fromFile(m_dataRef.skyboxImages[2], "res/textures/Skybox/bottom.jpg", errorMessage);
-				ImageTools::Import::fromFile(m_dataRef.skyboxImages[3], "res/textures/Skybox/top.jpg", errorMessage);
-				ImageTools::Import::fromFile(m_dataRef.skyboxImages[4], "res/textures/Skybox/front.jpg", errorMessage);
-				ImageTools::Import::fromFile(m_dataRef.skyboxImages[5], "res/textures/Skybox/back.jpg", errorMessage);
-				m_cubeMapImageFileNames[0] = "right.jpg";
-				m_cubeMapImageFileNames[1] = "left.jpg";
-				m_cubeMapImageFileNames[2] = "bottom.jpg";
-				m_cubeMapImageFileNames[3] = "top.jpg";
-				m_cubeMapImageFileNames[4] = "front.jpg";
-				m_cubeMapImageFileNames[5] = "back.jpg";
-				applyCubeMap();
-			}
-		}
-		else {
-			ImGui::ColorEdit3("Color", m_cubeMapColor);
-		}
-		if (ImGui::Button("Apply"))
-		{
-			applyCubeMap();
-		}
+		backgroundHeader();
 	}
 	if (ImGui::CollapsingHeader("VSync##Header")) {
 		ImGui::Checkbox("VSync", &m_dataRef.enableVSync);
+	}
+	if (ImGui::CollapsingHeader("SSAO##Header")) {
+		if (m_dataRef.renderingType != RenderingType::DEFERRED) {
+			ImGui::Text("Works only with Deferred render");
+		}
+		else {
+			ImGui::Checkbox("SSAO", &m_dataRef.enableSSAO);
+		}
 	}
 
 	if (ImGuiFileDialog::Instance()->Display("ChooseImageCubeMap_Right"))
@@ -111,6 +70,60 @@ void UI::RenderingMenu::process(const int windowWidth, const int windowHeight, b
 		loadCubeMapTexturefileDialog(5);
 
 	ImGui::End();
+}
+
+void UI::RenderingMenu::backgroundHeader()
+{
+	ImGui::Checkbox("use Cube map", &m_useCubeMap);
+	if (m_useCubeMap) {
+		ImGui::Text("Right");
+		ImGui::SameLine();
+		if (ImGui::Button(m_cubeMapImageFileNames[0].c_str()))
+			ImGuiFileDialog::Instance()->OpenDialog("ChooseImageCubeMap_Right", "Choose a Right texture", ".jpg,.jpeg,.png", ".");
+		ImGui::Text("Left");
+		ImGui::SameLine();
+		if (ImGui::Button(m_cubeMapImageFileNames[1].c_str()))
+			ImGuiFileDialog::Instance()->OpenDialog("ChooseImageCubeMap_Left", "Choose a Left texture", ".jpg,.jpeg,.png", ".");
+		ImGui::Text("Bottom");
+		ImGui::SameLine();
+		if (ImGui::Button(m_cubeMapImageFileNames[2].c_str()))
+			ImGuiFileDialog::Instance()->OpenDialog("ChooseImageCubeMap_Bottom", "Choose a Bottom texture", ".jpg,.jpeg,.png", ".");
+		ImGui::Text("Top");
+		ImGui::SameLine();
+		if (ImGui::Button(m_cubeMapImageFileNames[3].c_str()))
+			ImGuiFileDialog::Instance()->OpenDialog("ChooseImageCubeMap_Top", "Choose a Top texture", ".jpg,.jpeg,.png", ".");
+		ImGui::Text("Front");
+		ImGui::SameLine();
+		if (ImGui::Button(m_cubeMapImageFileNames[4].c_str()))
+			ImGuiFileDialog::Instance()->OpenDialog("ChooseImageCubeMap_Front", "Choose a Front texture", ".jpg,.jpeg,.png", ".");
+		ImGui::Text("Back");
+		ImGui::SameLine();
+		if (ImGui::Button(m_cubeMapImageFileNames[5].c_str()))
+			ImGuiFileDialog::Instance()->OpenDialog("ChooseImageCubeMap_Back", "Choose a Back texture", ".jpg,.jpeg,.png", ".");
+		if (ImGui::Button("Load default Cube map")) {
+			std::string errorMessage;
+			ImageTools::Import::fromFile(m_dataRef.skyboxImages[0], "res/textures/Skybox/right.jpg", errorMessage);
+			ImageTools::Import::fromFile(m_dataRef.skyboxImages[1], "res/textures/Skybox/left.jpg", errorMessage);
+			ImageTools::Import::fromFile(m_dataRef.skyboxImages[2], "res/textures/Skybox/bottom.jpg", errorMessage);
+			ImageTools::Import::fromFile(m_dataRef.skyboxImages[3], "res/textures/Skybox/top.jpg", errorMessage);
+			ImageTools::Import::fromFile(m_dataRef.skyboxImages[4], "res/textures/Skybox/front.jpg", errorMessage);
+			ImageTools::Import::fromFile(m_dataRef.skyboxImages[5], "res/textures/Skybox/back.jpg", errorMessage);
+			m_cubeMapImageFileNames[0] = "right.jpg";
+			m_cubeMapImageFileNames[1] = "left.jpg";
+			m_cubeMapImageFileNames[2] = "bottom.jpg";
+			m_cubeMapImageFileNames[3] = "top.jpg";
+			m_cubeMapImageFileNames[4] = "front.jpg";
+			m_cubeMapImageFileNames[5] = "back.jpg";
+			applyCubeMap();
+		}
+	}
+	else {
+		ImGui::ColorEdit3("Color", m_cubeMapColor);
+	}
+	if (ImGui::Button("Apply"))
+	{
+		applyCubeMap();
+	}
 }
 
 void UI::RenderingMenu::loadCubeMapTexturefileDialog(const size_t textureIndex)

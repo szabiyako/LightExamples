@@ -175,7 +175,7 @@ void Application::key_callback(GLFWwindow * window, int key, int scancode, int a
 void Application::cursor_callback(GLFWwindow * window, double xpos, double ypos)
 {
 	if (!showCursor)
-		m_camera.rotateFromCursor(xpos, ypos, 0.05f); //sensitivity = 0.05
+		m_camera.rotateFromCursor(xpos, ypos, m_cameraSensitivity);
 	else
 		m_camera.resetStartCursorPos(xpos, ypos);
 }
@@ -267,7 +267,7 @@ void Application::keysinput(GLFWwindow * window)
 		if (std::abs(state.axes[GLFW_GAMEPAD_AXIS_RIGHT_Y]) > 0.2f)
 			yRotation = state.axes[GLFW_GAMEPAD_AXIS_RIGHT_Y];
 
-		m_camera.rotateFromJoystick(xRotation, yRotation, 0.05f); //sensitivity = 0.05
+		m_camera.rotateFromJoystick(xRotation, yRotation, m_cameraSensitivity);
 		//std::cout << "RIGHT_TRIGGER " << state.axes[GLFW_GAMEPAD_AXIS_RIGHT_TRIGGER];
 	}
 }
@@ -296,8 +296,8 @@ Application::Application()
 	m_skyboxCubeMap = new Texture::CubeMap();
 
 	UI::DebugMenuDataRef debugMenuDataRef(m_enableFPScounter,m_enableCursor);
-	UI::CameraMenuDataRef cameraMenuDataRef(m_camera, m_cameraSpeed);
-	UI::RenderingMenuDataRef renderingMenuDataRef(m_renderingType, m_skyboxImages, *m_skyboxCubeMap, m_enableVSync);
+	UI::CameraMenuDataRef cameraMenuDataRef(m_camera, m_cameraSpeed, m_cameraSensitivity);
+	UI::RenderingMenuDataRef renderingMenuDataRef(m_renderingType, m_skyboxImages, *m_skyboxCubeMap, m_enableVSync, m_enableSSAO);
 	UI::ObjectsMenuDataRef objectsMenuDataRef(m_models, m_lightSources, *m_skyboxCubeMap);
 	UI::LightsMenuDataRef lightsMenuDataRef(m_lightSources);
 	UI::DataRef dataRef(

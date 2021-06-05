@@ -7,10 +7,12 @@ struct CameraMenuDataRef
 {
 	Camera &camera;
 	float &cameraSpeed;
+	float &cameraSensitivity;
 
 	CameraMenuDataRef(
 		Camera &camera,
-		float &cameraSpeed);
+		float &cameraSpeed,
+		float &cameraSensitivity);
 };
 }
 

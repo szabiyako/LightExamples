@@ -2,8 +2,10 @@
 
 UI::CameraMenuDataRef::CameraMenuDataRef(
 	Camera &camera,
-	float &cameraSpeed)
+	float &cameraSpeed,
+	float &cameraSensitivity)
 	: camera(camera),
-	  cameraSpeed(cameraSpeed)
+	  cameraSpeed(cameraSpeed),
+	  cameraSensitivity(cameraSensitivity)
 {
 }
