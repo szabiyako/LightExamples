@@ -306,13 +306,79 @@ void main() {
     vec3 viewDir = normalize(vec3((gl_FragCoord.xy - screeResolution.xy*0.5) / screeResolution.y, -1.0));
     vec3 worldDir = viewToWorld * viewDir;
 
+    const int nRays = 1;
+
+    const float offset = 0.0001;
+    const vec3 baseColor = vec3(1, 1, 1);
+    const vec3 lightPos = vec3(-50, 100, 5);
+
+    float currentColorPower = 0.5;
+    vec3 currentPos = location;
+    vec3 currentDir = worldDir;
+
+    ///////////////////////////////////////
+    /*
+    vec3 resultColor = vec3(0, 0, 0);
+    for (int i = 0; i < nRays; ++i) {
+        Ray ray;
+        ray.origin = currentPos;
+        ray.direction = currentDir;
+        ray.tStart = 0.0001;
+        ray.tEnd = 10000;
+
+        Hit hit;
+        traceCloseHitV2(ray, hit);
+
+        if (!hit.isHit) {
+            vec3 skyBoxPos = vec3(ray.direction.x, -ray.direction.y, ray.direction.z);
+            if (i == 0) {
+                color = texture(u_skybox, skyBoxPos);
+                return;
+            }
+            else {
+                resultColor += currentColorPower * vec3(texture(u_skybox, skyBoxPos));
+                break;
+            }
+        }
+        currentPos = hit.position + hit.normal * offset;
+        currentDir = reflect(ray.direction, hit.normal);
+
+        //Light ray
+        Ray lightRay;
+        lightRay.direction = normalize(lightPos - hit.position);
+        lightRay.origin = currentPos;
+        lightRay.tStart = 0.0001;
+        lightRay.tEnd = length(lightPos - hit.position);
+
+        float dotProduct = dot(hit.normal, lightRay.direction);
+        //if (dotProduct < 0) {
+        //    resultColor += currentColorPower * (baseColor * (1 - (-1 * dotProduct) ));
+        //    currentColorPower /= 2;
+        //    continue;
+        //}
+        //resultColor += currentColorPower * baseColor * dotProduct;
+
+        Hit lightHit;
+        traceCloseHitV2(lightRay, lightHit);
+        
+        if (lightHit.isHit)
+            resultColor += vec3(0, 0, 0);
+        else
+            resultColor += currentColorPower * baseColor;
+
+        currentColorPower /= 2;
+    }
+    color = vec4(resultColor, 1);
+    return;
+    */
+    ///////////////////////////////////////
+
     Ray ray;
     ray.direction = worldDir;
     ray.origin = location;
     ray.tStart = 0.0001;
     ray.tEnd = 10000;
 
-    const float offset = 0.0001;
 
     Hit hit;
     //traceCloseFor(ray, hit);
@@ -328,7 +394,6 @@ void main() {
 	}
 
 	//Light ray
-	const vec3 lightPos = vec3(-50, 100, 5);
 	Ray lightRay;
 	lightRay.direction = normalize(lightPos - hit.position);
 	lightRay.origin = hit.position + hit.normal * offset;
@@ -338,7 +403,7 @@ void main() {
 	Hit lightHit;
 	traceCloseHitV2(lightRay, lightHit);
 	
-	vec4 hitColor = vec4(vec3(1, 1, 1) * dot(hit.normal, lightRay.direction), 1);
+	vec4 hitColor = vec4(baseColor * dot(hit.normal, lightRay.direction), 1);
 	if (lightHit.isHit)
 		hitColor = vec4(hitColor.xyz / 2, 1);
 	
@@ -363,7 +428,7 @@ void main() {
 	Hit lightHit2;
 	traceCloseHitV2(lightRay2, lightHit2);
 	
-	vec4 hitColor2 = vec4(vec3(1, 1, 1) * dot(hit2.normal, lightRay2.direction), 1);
+	vec4 hitColor2 = vec4(baseColor * dot(hit2.normal, lightRay2.direction), 1);
 
     if (!hit2.isHit) {
         vec3 skyBoxPos = vec3(ray2.direction.x, -ray2.direction.y, ray2.direction.z);
@@ -373,7 +438,7 @@ void main() {
 	if (lightHit.isHit)
 		hitColor2 = vec4(hitColor2.xyz / 2, 1);
 	
-	color = vec4(1, 1, 1, 1) * 0.25 + hitColor * 0.5 + hitColor2 * 0.25;
+	color = vec4(baseColor, 1) * 0.25 + hitColor * 0.5 + hitColor2 * 0.25;
 	//if (!lightHit.isHit)
 	//	color = vec4(hit.normal*0.5 + hit2.normal * 0.2, 1.0);
 	//else
