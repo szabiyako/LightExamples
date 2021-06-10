@@ -236,7 +236,6 @@
     <None Include="res\shaders\Default.shader" />
     <None Include="res\shaders\RayTracing.shader" />
     <None Include="res\shaders\Skybox.shader" />
-    <None Include="res\shaders\TestShader.shader" />
     <None Include="res\shaders\TextureTestShader.shader" />
   </ItemGroup>
   <ItemGroup>

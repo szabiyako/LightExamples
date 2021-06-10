@@ -422,6 +422,7 @@ void Application::run()
 				rtShader.setUniform1i("u_normalTexture", 3);
 				rtShader.setUniformMatrix3f("viewToWorld", glm::transpose(m_camera.getView()));
 				rtShader.setUniformVec3f("location", m_camera.getPos());
+				rtShader.setUniform1f("u_fov", m_camera.getFOV());
 				int width, height;
 				glfwGetWindowSize(m_window, &width, &height);
 				rtShader.setUniformVec2f("screeResolution", glm::vec2(width, height));

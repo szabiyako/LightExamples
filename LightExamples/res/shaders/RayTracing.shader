@@ -40,6 +40,7 @@ uniform int texPosWidth;
 
 uniform samplerCube u_skybox;
 uniform sampler2D u_normalTexture;
+uniform float u_fov;
 
 
 //------------------- STRUCT AND LOADER BEGIN -----------------------
@@ -303,23 +304,25 @@ void traceCloseFor(inout Ray ray, inout Hit hit)
 }
 
 void main() {
-    vec3 viewDir = normalize(vec3((gl_FragCoord.xy - screeResolution.xy*0.5) / screeResolution.y, -1.0));
+    vec3 viewDir = normalize(vec3((gl_FragCoord.xy - screeResolution.xy*0.5) * (u_fov / 53.125) / screeResolution.y, -1.0));
     vec3 worldDir = viewToWorld * viewDir;
 
-    const int nRays = 1;
+    const int nRays = 2;
 
-    const float offset = 0.0001;
+    //const float offset = 0.0001;
+    const float offset = 0.1;
     const vec3 baseColor = vec3(1, 1, 1);
     const vec3 lightPos = vec3(-50, 100, 5);
 
-    float currentColorPower = 0.5;
+    float currentColorPower = 0.9;
     vec3 currentPos = location;
     vec3 currentDir = worldDir;
 
     ///////////////////////////////////////
-    /*
+    
     vec3 resultColor = vec3(0, 0, 0);
-    for (int i = 0; i < nRays; ++i) {
+    int rayIndex = 0;
+    for (rayIndex = 0; rayIndex < nRays; ++rayIndex) {
         Ray ray;
         ray.origin = currentPos;
         ray.direction = currentDir;
@@ -331,7 +334,7 @@ void main() {
 
         if (!hit.isHit) {
             vec3 skyBoxPos = vec3(ray.direction.x, -ray.direction.y, ray.direction.z);
-            if (i == 0) {
+            if (rayIndex == 0) {
                 color = texture(u_skybox, skyBoxPos);
                 return;
             }
@@ -351,26 +354,32 @@ void main() {
         lightRay.tEnd = length(lightPos - hit.position);
 
         float dotProduct = dot(hit.normal, lightRay.direction);
-        //if (dotProduct < 0) {
-        //    resultColor += currentColorPower * (baseColor * (1 - (-1 * dotProduct) ));
-        //    currentColorPower /= 2;
-        //    continue;
-        //}
-        //resultColor += currentColorPower * baseColor * dotProduct;
+        float colorKoeff = (dotProduct + 1.0) / 2.0;
+        resultColor += currentColorPower * colorKoeff;
+        currentColorPower *= currentColorPower;
+
+        //if (dotProduct < 0)
+        //    resultColor = vec3(-dotProduct, 1, 0);
+        //else
+        //    resultColor = vec3(dotProduct, 0, 1);
+        //break;
+        if (dotProduct < 0)
+            continue;
 
         Hit lightHit;
         traceCloseHitV2(lightRay, lightHit);
         
         if (lightHit.isHit)
-            resultColor += vec3(0, 0, 0);
-        else
-            resultColor += currentColorPower * baseColor;
-
-        currentColorPower /= 2;
+            resultColor -= vec3(0.2, 0.2, 0.2);
+            //resultColor -= vec3(1, 1, 1) * colorKoeff;
+        //else
+        //    resultColor += currentColorPower * baseColor;
+        
+        //currentColorPower *= currentColorPower;
     }
-    color = vec4(resultColor, 1);
+    color = vec4(resultColor/(rayIndex + 1), 1);
     return;
-    */
+    
     ///////////////////////////////////////
 
     Ray ray;
