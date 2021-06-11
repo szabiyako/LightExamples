@@ -307,7 +307,7 @@ void main() {
     vec3 viewDir = normalize(vec3((gl_FragCoord.xy - screeResolution.xy*0.5) * (u_fov / 53.125) / screeResolution.y, -1.0));
     vec3 worldDir = viewToWorld * viewDir;
 
-    const int nRays = 2;
+    const int nRays = 40;
 
     //const float offset = 0.0001;
     const float offset = 0.1;
@@ -355,7 +355,7 @@ void main() {
 
         float dotProduct = dot(hit.normal, lightRay.direction);
         float colorKoeff = (dotProduct + 1.0) / 2.0;
-        resultColor += currentColorPower * colorKoeff;
+        resultColor += currentColorPower * colorKoeff * baseColor;
         currentColorPower *= currentColorPower;
 
         //if (dotProduct < 0)
@@ -370,7 +370,7 @@ void main() {
         traceCloseHitV2(lightRay, lightHit);
         
         if (lightHit.isHit)
-            resultColor -= vec3(0.2, 0.2, 0.2);
+            resultColor -= 0.2 * baseColor;
             //resultColor -= vec3(1, 1, 1) * colorKoeff;
         //else
         //    resultColor += currentColorPower * baseColor;

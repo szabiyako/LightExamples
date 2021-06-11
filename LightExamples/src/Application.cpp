@@ -232,9 +232,10 @@ Application::Application()
 	glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
 	m_skyboxCubeMap = new Texture::CubeMap();
-	m_vertexTexture = new Texture::VertexTexture();
-	m_normalTexture = new Texture::VertexTexture();
 	m_bvhTexture = new Texture::VertexTexture();
+	m_vertexTexture = new Texture::VertexTexture();
+	m_uvTexture = new Texture::VertexTexture();
+	m_normalTexture = new Texture::VertexTexture();
 
 	UI::DebugMenuDataRef debugMenuDataRef(m_enableFPScounter,m_enableCursor);
 	UI::CameraMenuDataRef cameraMenuDataRef(m_camera, m_cameraSpeed, m_cameraSensitivity);
@@ -258,12 +259,14 @@ Application::~Application()
 	delete m_skyboxCubeMap;
 	if (m_bvh != nullptr)
 		delete m_bvh;
-	if (m_vertexTexture != nullptr)
-		delete m_vertexTexture;
-	if (m_normalTexture != nullptr)
-		delete m_normalTexture;
 	if (m_bvhTexture != nullptr)
 		delete m_bvhTexture;
+	if (m_vertexTexture != nullptr)
+		delete m_vertexTexture;
+	if (m_uvTexture != nullptr)
+		delete m_uvTexture;
+	if (m_normalTexture != nullptr)
+		delete m_normalTexture;
 	const size_t nModels = m_models.size();
 	for (size_t modelIndex = 0; modelIndex < nModels; ++modelIndex) {
 		m_models[modelIndex].deleteDrawable();
@@ -335,11 +338,16 @@ void Application::run()
 	int maxTextureSize = 0;
 	glGetIntegerv(GL_MAX_TEXTURE_SIZE, &maxTextureSize);
 	Console::print("Max texture size = " + std::to_string(maxTextureSize) + "x" + std::to_string(maxTextureSize) + "\n");
-	Console::print("Max vertices that can be raytraced = " + std::to_string(double(maxTextureSize * maxTextureSize) / 8.0) + "\n");
+	Console::print("Max vertices that can be raytraced = " + std::to_string(double(maxTextureSize * maxTextureSize)) + "\n");
+	Console::print("Max triangles that can be raytraced (worst case) = " + std::to_string(double(maxTextureSize * maxTextureSize) / 3.0) + "\n\n");
+
+	int maxTextureArraySize = 0;
+	glGetIntegerv(GL_MAX_ARRAY_TEXTURE_LAYERS, &maxTextureArraySize);
+	Console::print("Max texture array size = " + std::to_string(maxTextureArraySize) + "\n\n");
 
 	int textureUnitsFrag = 0;
 	glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, &textureUnitsFrag);
-	Console::print("Max textures in frag shader at once = " + std::to_string(textureUnitsFrag) + "\n");
+	Console::print("Max textures in frag shader at once = " + std::to_string(textureUnitsFrag) + "\n\n");
 
 	Shader rtShader("res/shaders/RayTracing.shader");
 	Shader textureShader("res/shaders/TextureTestShader.shader");
@@ -414,6 +422,13 @@ void Application::run()
 				// POSTFX if there will be any
 			}
 			if (m_renderingType == RenderingType::RAYTRACING) {
+				const size_t nLightSources = m_lightSources.size();
+				const size_t nModels = m_models.size();
+				glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
+				for (size_t i = 0; i < nModels; ++i)
+					Renderer::draw(m_models[i].getDrawable(), m_models[i].getModelMatrix(), m_camera.getView(), m_camera.getProj());
+				glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
+
 				rtva.bind();
 				rtShader.bind();
 				rtShader.setUniform1i("texPosition", 0);
@@ -433,7 +448,12 @@ void Application::run()
 				m_skyboxCubeMap->bind(2);
 				m_normalTexture->bind(3);
 				// Draw
+				glDisable(GL_DEPTH_TEST);
 				glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+				glEnable(GL_DEPTH_TEST);
+
+				for (size_t i = 0; i < nLightSources; ++i)
+					Renderer::draw(m_lightSources[i].getDrawable(), m_lightSources[i].getModelMatrix(), m_camera.getView(), m_camera.getProj());
 			}
 
 			Renderer::draw(m_ui);

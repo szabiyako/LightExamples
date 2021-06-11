@@ -50,9 +50,10 @@ class Application
 
 	// RayTracing Data
 	BVH::BVHBuilder* m_bvh = nullptr;
-	Texture::VertexTexture *m_vertexTexture = nullptr;
-	Texture::VertexTexture* m_normalTexture = nullptr;
 	Texture::VertexTexture *m_bvhTexture = nullptr;
+	Texture::VertexTexture *m_vertexTexture = nullptr;
+	Texture::VertexTexture *m_uvTexture = nullptr;
+	Texture::VertexTexture* m_normalTexture = nullptr;
 
 	// DebugMenuData
 	bool m_enableFPScounter = true;
