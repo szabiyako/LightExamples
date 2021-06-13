@@ -19,7 +19,16 @@ void Utils::loadModelsToTexture(
 	std::vector<float> vertexData;
 	std::vector<float> normalData;
 	for (size_t i = 0; i < nModels; ++i) {
-		const ObjData& objData = models[i].getLoadableDataRef().objData;
+		const ObjData& baseObjData = models[i].getLoadableDataRef().objData;
+		ObjData objData = baseObjData;
+		const size_t nVertices = baseObjData.data.vertices.size();
+		const glm::mat4x4 transform = models[i].getModelMatrix();
+		if (transform != glm::mat4(1.f)) {
+			for (size_t vIndex = 0; vIndex < nVertices; ++vIndex) {
+				objData.data.vertices[vIndex] = transform * glm::vec4(objData.data.vertices[vIndex], 1);
+			}
+		}
+		//const ObjData& objData = models[i].getLoadableDataRef().objData;
 		const std::vector<int> triangleVertexIndices = ObjDataTools::Data::buildTriangleVertexIndices(objData.indices.polygons, objData.indices.polygonsStarts);
 		const std::vector<float> triangleVertexCoords = ObjDataTools::Data::packTriangleVertexCoords(objData.data.vertices, triangleVertexIndices);
 		vertexData.insert(vertexData.end(), triangleVertexCoords.begin(), triangleVertexCoords.end());

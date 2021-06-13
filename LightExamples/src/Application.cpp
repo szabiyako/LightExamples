@@ -239,7 +239,7 @@ Application::Application()
 
 	UI::DebugMenuDataRef debugMenuDataRef(m_enableFPScounter,m_enableCursor);
 	UI::CameraMenuDataRef cameraMenuDataRef(m_camera, m_cameraSpeed, m_cameraSensitivity);
-	UI::RenderingMenuDataRef renderingMenuDataRef(m_renderingType, m_skyboxImages, *m_skyboxCubeMap, m_enableVSync, m_enableSSAO);
+	UI::RenderingMenuDataRef renderingMenuDataRef(m_renderingType, m_nRaysMax, m_skyboxImages, *m_skyboxCubeMap, m_enableVSync, m_enableSSAO);
 	UI::ObjectsMenuDataRef objectsMenuDataRef(m_models, m_lightSources, *m_skyboxCubeMap);
 	UI::LightsMenuDataRef lightsMenuDataRef(m_lightSources);
 	UI::DataRef dataRef(
@@ -443,6 +443,18 @@ void Application::run()
 				rtShader.setUniformVec2f("screeResolution", glm::vec2(width, height));
 				rtShader.setUniform1i("bvhWidth", m_bvhTexture->getWidth());
 				rtShader.setUniform1i("texPosWidth", m_vertexTexture->getWidth());
+
+				//setupLight
+				std::vector<glm::vec3> lightPos;
+				lightPos.reserve(32);
+				for (size_t i = 0; i < nLightSources; ++i) {
+					if (m_lightSources[i].isEnabled())
+						lightPos.push_back(m_lightSources[i].getPos());
+				}
+				rtShader.setUniform1i("u_nPointLights", lightPos.size());
+				rtShader.setUniformVec3fArray("u_pointLightsPos", lightPos, 32);
+				rtShader.setUniform1i("u_nRaysMax", m_nRaysMax);
+
 				m_vertexTexture->bind(0);
 				m_bvhTexture->bind(1);
 				m_skyboxCubeMap->bind(2);

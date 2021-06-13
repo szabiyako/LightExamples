@@ -148,6 +148,19 @@ void Shader::setUniformVec3f(const std::string & name, glm::vec3 vec)
 	GLCall(glUniform3f(getUniformLocation(name), vec[0], vec[1], vec[2]));
 }
 
+void Shader::setUniformVec3fArray(const std::string& name, std::vector<glm::vec3> vecArray, const int size)
+{
+	vecArray.resize(size, glm::vec3(0, 0, 0));
+	std::vector<float> data(size * 3, 0.f);
+	const size_t arrSize = vecArray.size();
+	for (int i = 0; (i < arrSize) && (i < size); ++i) {
+		data[i * 3] = vecArray[i].x;
+		data[i * 3 + 1] = vecArray[i].y;
+		data[i * 3 + 2] = vecArray[i].z;
+	}
+	GLCall(glUniform3fv(getUniformLocation(name), size, data.data()));
+}
+
 void Shader::setUniformVec4f(const std::string & name, glm::vec4 vec)
 {
 	GLCall(glUniform4f(getUniformLocation(name), vec[0], vec[1], vec[2], vec[3]));

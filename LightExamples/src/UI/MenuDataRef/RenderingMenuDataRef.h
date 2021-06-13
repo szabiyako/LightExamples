@@ -9,6 +9,7 @@ namespace UI {
 struct RenderingMenuDataRef
 {
 	RenderingType &renderingType;
+	int &nRaysMax;
 	std::vector<Image> &skyboxImages;
 	Texture::CubeMap &skyboxCubeMap;
 	bool &enableVSync;
@@ -16,6 +17,7 @@ struct RenderingMenuDataRef
 	
 	RenderingMenuDataRef(
 		RenderingType &renderingType,
+		int &nRaysMax,
 		std::vector<Image> &skyboxImages,
 		Texture::CubeMap &skyboxCubeMap,
 		bool &enableVSync,

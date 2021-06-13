@@ -56,7 +56,7 @@ private:
 	glm::vec3 m_lightColor = { 1.f, 1.f, 1.f };
 
 	// Shader data
-	Type m_type = Type::POINT;
+	Type m_type = Type::DIRECTIONAL;
 	bool m_isEnabled = true;
 	bool m_isShadowsEnabled = false;
 	glm::vec3 m_position = { 0.f, 0.f, 0.f };

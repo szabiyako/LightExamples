@@ -46,9 +46,9 @@ void main()
 		diffuse = abs(diffuse / 2);
 	vec3 viewDir = normalize(Pos);
 	vec3 reflectedLightDir = reflect(lightDir, Normal);
-	float specular = max(dot(reflectedLightDir, -viewDir), 0.0);
+	float specular = max(pow(dot(reflectedLightDir, -viewDir), 32), 0.0);
 
-	float specularAmount = 0.05;
+	float specularAmount = 0.02;
 	float diffuseAmount = 0.75;
 	float ambientAmount = 1.0 - diffuseAmount;
 

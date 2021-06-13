@@ -41,6 +41,15 @@ void UI::RenderingMenu::process(const int windowWidth, const int windowHeight, b
 				m_dataRef.renderingType = renderingType;
 		ImGui::EndPopup();
 	}
+
+	if (m_dataRef.renderingType == RenderingType::RAYTRACING) {
+		ImGui::DragInt("Max rays", &m_dataRef.nRaysMax, 1.0f, 1, 40);
+		if (m_dataRef.nRaysMax < 1)
+			m_dataRef.nRaysMax = 1;
+		else if (m_dataRef.nRaysMax > 40)
+			m_dataRef.nRaysMax = 40;
+		ImGui::NewLine();
+	}
 	if (ImGui::CollapsingHeader("Background")) {
 		backgroundHeader();
 	}

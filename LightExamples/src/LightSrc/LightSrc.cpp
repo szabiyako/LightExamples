@@ -15,7 +15,7 @@
 
 LightSrc::LightSrc()
 {
-	setType(Type::DIRECTIONAL);
+	setType(Type::POINT);
 }
 
 LightSrc::~LightSrc()
