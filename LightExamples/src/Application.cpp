@@ -17,8 +17,8 @@ void Application::processChanges()
 	}
 	m_lastEnableVSync = m_enableVSync;
 	if ((m_renderingType == RenderingType::RAYTRACING)
-		&& !m_isBVHcreated) {
-		m_isBVHcreated = true;
+		&& !m_isBVHvalid) {
+		m_isBVHvalid = true;
 		//Create BVH
 		if (m_bvh != nullptr)
 			delete m_bvh;
@@ -26,7 +26,7 @@ void Application::processChanges()
 		Utils::fillBVH(*m_vertexTexture, *m_normalTexture, *m_bvhTexture, *m_bvh, m_models);
 	}
 	if (m_renderingType != RenderingType::RAYTRACING)
-		m_isBVHcreated = false;
+		m_isBVHvalid = false;
 
 }
 

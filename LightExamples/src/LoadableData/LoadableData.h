@@ -12,19 +12,19 @@ struct LoadableData
 
 		Image reflection;
 	};
-	struct PBR {
-		Image albedo;
-		Image metallic;
-		Image roughness;
-		Image normal;
-		Image ao;
-
-		Image reflection;
-	};
+	//struct PBR {
+	//	Image albedo;
+	//	Image metallic;
+	//	Image roughness;
+	//	Image normal;
+	//	Image ao;
+	//
+	//	Image reflection;
+	//};
 
 	ObjData objData;
 	Default defaultData;
-	PBR pbrData;
+	//PBR pbrData;
 
 
 	LoadableData();

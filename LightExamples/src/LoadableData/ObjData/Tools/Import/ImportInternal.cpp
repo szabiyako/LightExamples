@@ -458,7 +458,7 @@ bool ObjDataTools::Import::Internal::loadBodyByToken(ObjData& objData, const Obj
             errorMessage = std::string("Error in line " + std::to_string(currentLineNumber) + ". " + errorMessage);
             return false;
         }
-        objData.data.normals.push_back(normal);
+        objData.data.normals.push_back(glm::normalize(normal));
         return true;
     }
     if (token == LineToken::FACE)

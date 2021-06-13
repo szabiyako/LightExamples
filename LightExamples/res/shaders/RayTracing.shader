@@ -128,7 +128,7 @@ Triangle getTriangle(int index)
 
 //------------------- STACK BEGIN -----------------------
 int countTI = 0;
-int _stack[15];
+int _stack[20];
 int _index = -1;
 
 void stackClear()
@@ -143,7 +143,7 @@ int stackSize()
 
 void stackPush(in int node)
 {
-    if(_index > 14	)
+    if(_index > 19)
         discard;
     _stack[++_index] = node;
  

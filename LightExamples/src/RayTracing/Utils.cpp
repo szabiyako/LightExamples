@@ -34,18 +34,18 @@ void Utils::loadModelsToTexture(
 		vertexData.insert(vertexData.end(), triangleVertexCoords.begin(), triangleVertexCoords.end());
 
 		// Normals
-		//const bool hasNormals = (objData.indices.normals.size() == objData.indices.polygons.size());
+		const bool hasNormals = (objData.indices.normals.size() == objData.indices.polygons.size());
 		std::vector<float> triangleNormalCoords;
-		//if (hasNormals) {
-		//	const std::vector<glm::vec3> normals = objData.data.normals;
-		//	const std::vector<int> normalsIndices = objData.indices.normals;
-		//	const std::vector<int> triangleNormalIndices = ObjDataTools::Data::buildTriangleVertexIndices(normalsIndices, objData.indices.polygonsStarts);
-		//	triangleNormalCoords = ObjDataTools::Data::packTriangleVertexCoords(normals, triangleNormalIndices);
-		//}
-		//else {
+		if (hasNormals) {
+			const std::vector<glm::vec3> normals = objData.data.normals;
+			const std::vector<int> normalsIndices = objData.indices.normals;
+			const std::vector<int> triangleNormalIndices = ObjDataTools::Data::buildTriangleVertexIndices(normalsIndices, objData.indices.polygonsStarts);
+			triangleNormalCoords = ObjDataTools::Data::packTriangleVertexCoords(normals, triangleNormalIndices);
+		}
+		else {
 			const std::vector<glm::vec3> normals = ObjDataTools::Data::computeNormals(triangleVertexIndices, objData.data.vertices);
 			triangleNormalCoords = ObjDataTools::Data::packTriangleVertexCoords(normals, triangleVertexIndices);
-		//}
+		}
 		normalData.insert(normalData.end(), triangleNormalCoords.begin(), triangleNormalCoords.end());
 	}
 	bvh.build(vertexData);

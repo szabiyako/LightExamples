@@ -22,6 +22,7 @@ std::vector<glm::vec3> ObjDataTools::Data::computeNormals(
             const glm::vec3 edge2 = vertices[nextVertexInd] - vertices[originVertexInd];
 
             const glm::vec3 normal = glm::normalize(glm::cross(edge2 * edgeKoeff, edge1 * edgeKoeff));
+            //const glm::vec3 normal = glm::cross(edge2, edge1);
 
             res[triangleVertexIndices[3 * triangleInd + (vertexInd + 1) % nVerticesInTriangle]] += normal;
         }
@@ -83,6 +84,7 @@ std::vector<float> ObjDataTools::Data::packUVs(const std::vector<glm::vec2>& uvs
     return triangleUvs;
 }
 
+#include "Utils/Console.h"
 std::vector<float> ObjDataTools::Data::buildRawData(const ObjData& objData)
 {
     const std::vector<int> triangleVertexIndices = ObjDataTools::Data::buildTriangleVertexIndices(objData.indices.polygons, objData.indices.polygonsStarts);
@@ -92,6 +94,7 @@ std::vector<float> ObjDataTools::Data::buildRawData(const ObjData& objData)
     const bool hasNormals = (objData.indices.normals.size() == objData.indices.polygons.size());
 
     std::vector<float> triangleNormalCoords;
+    Console::print(std::string("Model ") + (hasNormals ? "has normals\n" : "doesn't have normals\n"));
     if (hasNormals) {
         const std::vector<glm::vec3> normals = objData.data.normals;
         const std::vector<int> normalsIndices = objData.indices.normals;
@@ -104,6 +107,7 @@ std::vector<float> ObjDataTools::Data::buildRawData(const ObjData& objData)
     }
 
     const bool hasUVs = !objData.indices.uv.empty();
+    Console::print("Model " + (hasUVs ? std::string("has UVs") : std::string("doesn't have UVs")) + "\n");
 
     std::vector<float> triangleUVs;
     if (hasUVs) {

@@ -73,7 +73,7 @@ class Application
 	bool m_enableSSAO = false;
 
 	bool m_lastEnableVSync = false;
-	bool m_isBVHcreated = false;
+	bool m_isBVHvalid = false;
 
 	// ObjectsMenuData
 	std::vector<Model> m_models;
