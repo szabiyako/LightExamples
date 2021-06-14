@@ -4,12 +4,13 @@
 #include <vector>
 #include "LoadableData/Image/Image.h"
 #include "OpenGL/Texture/CubeMap/CubeMap.h"
+#include "RayTracing/RayTracer.h"
 
 namespace UI {
 struct RenderingMenuDataRef
 {
 	RenderingType &renderingType;
-	int &nRaysMax;
+	RayTracer &rayTracer;
 	std::vector<Image> &skyboxImages;
 	Texture::CubeMap &skyboxCubeMap;
 	bool &enableVSync;
@@ -17,7 +18,7 @@ struct RenderingMenuDataRef
 	
 	RenderingMenuDataRef(
 		RenderingType &renderingType,
-		int &nRaysMax,
+		RayTracer &rayTracer,
 		std::vector<Image> &skyboxImages,
 		Texture::CubeMap &skyboxCubeMap,
 		bool &enableVSync,

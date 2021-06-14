@@ -6,7 +6,7 @@
 #include "Utils/Console.h"
 
 //Render types
-#include "Drawable/DrawableData/Default/Default.h"
+#include "Drawable/DrawableData/Geometry/Geometry.h"
 #include "Drawable/RenderPipeline/Default/Default.h"
 
 #include "glm/gtc/matrix_transform.hpp"
@@ -54,10 +54,10 @@ void LightSrc::setType(const Type& type)
 	if (!isLoaded) {
 		Console::print("Failed to load model in lightSrc " + errorMessage + '\n');
 	}
-	DrawableData::Default* defaultData = new DrawableData::Default(objData);
+	DrawableData::Geometry* geometryData = new DrawableData::Geometry(objData);
 	if (m_drawable.drawableData != nullptr)
 		delete m_drawable.drawableData;
-	m_drawable.drawableData = defaultData;
+	m_drawable.drawableData = geometryData;
 	if (m_drawable.renderPipeline == nullptr) {
 		RenderPipeline::Default* defaultPipeline = new RenderPipeline::Default();
 		m_drawable.renderPipeline = defaultPipeline;

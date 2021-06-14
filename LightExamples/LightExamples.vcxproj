@@ -163,6 +163,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\OpenGL\FrameBuffer.cpp" />
+    <ClCompile Include="src\RayTracing\RayTracer.cpp" />
     <ClCompile Include="src\LoadableData\ObjData\Tools\Data.cpp" />
     <ClCompile Include="src\OpenGL\Texture\CubeMap\CubeMap.cpp" />
     <ClCompile Include="src\Model\Model.cpp" />
@@ -196,7 +198,7 @@
     <ClCompile Include="src\UI\Elements\Utils\FPSCounter.cpp" />
     <ClCompile Include="src\LogWriter\LogWriter.cpp" />
     <ClCompile Include="src\Dependencies\imguiFileDialog\ImGuiFileDialog.cpp" />
-    <ClCompile Include="src\Drawable\DrawableData\Default\Default.cpp" />
+    <ClCompile Include="src\Drawable\DrawableData\Geometry\Geometry.cpp" />
     <ClCompile Include="src\Drawable\RenderPipeline\Default\Default.cpp" />
     <ClCompile Include="src\OpenGL\ErrorHandler.cpp" />
     <ClCompile Include="src\Drawable\RenderPipeline\RenderPipeline.cpp" />
@@ -235,10 +237,13 @@
   <ItemGroup>
     <None Include="res\shaders\Default.shader" />
     <None Include="res\shaders\RayTracing.shader" />
+    <None Include="res\shaders\Screen.shader" />
     <None Include="res\shaders\Skybox.shader" />
     <None Include="res\shaders\TextureTestShader.shader" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\OpenGL\FrameBuffer.h" />
+    <ClInclude Include="src\RayTracing\RayTracer.h" />
     <ClInclude Include="src\LoadableData\ObjData\Tools\Data.h" />
     <ClInclude Include="src\OpenGL\Texture\CubeMap\CubeMap.h" />
     <ClInclude Include="src\Model\Model.h" />
@@ -272,7 +277,7 @@
     <ClInclude Include="src\UI\Elements\Utils\FPSCounter.h" />
     <ClInclude Include="src\LogWriter\LogWriter.h" />
     <ClInclude Include="src\Dependencies\imguiFileDialog\ImGuiFileDialog.h" />
-    <ClInclude Include="src\Drawable\DrawableData\Default\Default.h" />
+    <ClInclude Include="src\Drawable\DrawableData\Geometry\Geometry.h" />
     <ClInclude Include="src\Drawable\RenderPipeline\Default\Default.h" />
     <ClInclude Include="src\OpenGL\ErrorHandler.h" />
     <ClInclude Include="src\Utils\Assert.h" />

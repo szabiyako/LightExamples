@@ -43,11 +43,14 @@ void UI::RenderingMenu::process(const int windowWidth, const int windowHeight, b
 	}
 
 	if (m_dataRef.renderingType == RenderingType::RAYTRACING) {
-		ImGui::DragInt("Max rays", &m_dataRef.nRaysMax, 1.0f, 1, 40);
-		if (m_dataRef.nRaysMax < 1)
-			m_dataRef.nRaysMax = 1;
-		else if (m_dataRef.nRaysMax > 40)
-			m_dataRef.nRaysMax = 40;
+		ImGui::DragInt("Max rays", &m_dataRef.rayTracer.getMaxRaysRef(), 1.0f, 1, 40);
+		if (m_dataRef.rayTracer.getMaxRaysRef() < 1)
+			m_dataRef.rayTracer.getMaxRaysRef() = 1;
+		else if (m_dataRef.rayTracer.getMaxRaysRef() > 40)
+			m_dataRef.rayTracer.getMaxRaysRef() = 40;
+		float scale = m_dataRef.rayTracer.getResolutionScale();
+		ImGui::DragFloat("Scale", &scale, 0.01f, 0.1f, 1.f);
+		m_dataRef.rayTracer.setResolutionScale(scale);
 		ImGui::NewLine();
 	}
 	if (ImGui::CollapsingHeader("Background")) {

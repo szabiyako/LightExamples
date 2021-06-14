@@ -13,12 +13,12 @@
 #include "Utils/NonCopyable.h"
 
 namespace DrawableData {
-class Default : public DrawableData, public NonCopyable
+class Geometry : public DrawableData, public NonCopyable
 {
 public:
-	Default(const ObjData& objData);
+	Geometry(const ObjData& objData);
 	void loadFromObjData(const ObjData& objData);
-	~Default();
+	~Geometry();
 
 	bool hasUVs() const;
 //private:

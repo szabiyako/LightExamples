@@ -5,7 +5,7 @@
 
 #include "glm/gtc/matrix_transform.hpp"
 
-#include "Drawable/DrawableData/Default/Default.h"
+#include "Drawable/DrawableData/Geometry/Geometry.h"
 #include <iostream>
 
 using namespace RenderPipeline;
@@ -22,7 +22,7 @@ void Default::draw(
 				const glm::mat4x4 &projectionMatrix)
 {
 	DrawableData::DrawableData& drawData = const_cast<DrawableData::DrawableData&>(drawableData);
-	DrawableData::Default* defaultData = dynamic_cast<DrawableData::Default*>(&drawData);
+	DrawableData::Geometry* defaultData = dynamic_cast<DrawableData::Geometry*>(&drawData);
 	ASSERT(defaultData != nullptr); // DrawableData is not Default type
 
 	m_shader.bind();

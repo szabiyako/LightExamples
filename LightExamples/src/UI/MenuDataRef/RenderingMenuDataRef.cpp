@@ -2,13 +2,13 @@
 
 UI::RenderingMenuDataRef::RenderingMenuDataRef(
 	RenderingType& renderingType,
-	int& nRaysMax,
+	RayTracer &rayTracer,
 	std::vector<Image> &skyboxImages,
 	Texture::CubeMap &skyboxCubeMap,
 	bool& enableVSync,
 	bool &enableSSAO)
 	: renderingType(renderingType),
-	  nRaysMax(nRaysMax),
+	  rayTracer(rayTracer),
 	  skyboxImages(skyboxImages),
 	  skyboxCubeMap(skyboxCubeMap),
 	  enableVSync(enableVSync),

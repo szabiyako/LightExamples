@@ -2,7 +2,7 @@
 
 #include "LoadableData/ObjData/Tools/Import.h"
 #include "Utils/Console.h"
-#include "Drawable/DrawableData/Default/Default.h"
+#include "Drawable/DrawableData/Geometry/Geometry.h"
 #include "Drawable/RenderPipeline/Default/Default.h"
 
 #include "glm/gtc/matrix_transform.hpp"
@@ -145,7 +145,7 @@ void UI::ObjectMenu::process(const int windowWidth, const int windowHeight, bool
 				if (m_name == "New object")
 					m_name = fileName;
 				m_model->getLoadableDataRef().objData = objData;
-				DrawableData::Default *defaultData = new DrawableData::Default(objData);
+				DrawableData::Geometry *defaultData = new DrawableData::Geometry(objData);
 				if (m_model->getDrawableRef().drawableData != nullptr)
 					delete m_model->getDrawableRef().drawableData;
 				m_model->getDrawableRef().drawableData = defaultData;

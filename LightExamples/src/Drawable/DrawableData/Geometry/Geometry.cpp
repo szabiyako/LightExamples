@@ -1,4 +1,4 @@
-#include "Default.h"
+#include "Geometry.h"
 
 using namespace DrawableData;
 
@@ -9,12 +9,12 @@ using namespace DrawableData;
 #include "Utils/Console.h"
 #include "LoadableData/ObjData/Tools/Data.h"
 
-Default::Default(const ObjData& objData)
+Geometry::Geometry(const ObjData& objData)
 {
     loadFromObjData(objData);
 }
 
-void Default::loadFromObjData(const ObjData& objData)
+void Geometry::loadFromObjData(const ObjData& objData)
 {
     std::vector<float> data = ObjDataTools::Data::buildRawData(objData);
     m_hasUVs = !objData.indices.uv.empty();
@@ -32,11 +32,11 @@ void Default::loadFromObjData(const ObjData& objData)
     m_indexBuffer.create(indices.data(), nVertices);
 }
 
-Default::~Default()
+Geometry::~Geometry()
 {
 }
 
-bool Default::hasUVs() const
+bool Geometry::hasUVs() const
 {
     return m_hasUVs;
 }

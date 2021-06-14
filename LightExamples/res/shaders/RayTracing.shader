@@ -28,7 +28,7 @@ void main(void)
 #version 330 core
 
 in vec2 fragCoord;
-out vec4 color;
+layout(location = 0) out vec4 color;
 
 uniform vec3 location;
 uniform vec2 screeResolution;
@@ -40,11 +40,13 @@ uniform int texPosWidth;
 
 uniform samplerCube u_skybox;
 uniform sampler2D u_normalTexture;
+uniform sampler2D u_previousTexture;
 uniform float u_fov;
 
 uniform vec3 u_pointLightsPos[32];
 uniform int u_nPointLights;
 uniform int u_nRaysMax;
+uniform float u_samplePart;
 
 
 //------------------- STRUCT AND LOADER BEGIN -----------------------
@@ -305,6 +307,7 @@ void main() {
     vec3 currentPos = location;
     vec3 currentDir = worldDir;
 
+
     ///////////////////////////////////////
     
     vec3 resultColor = vec3(0, 0, 0);
@@ -333,14 +336,14 @@ void main() {
         currentPos = hit.position + hit.planeNormal * offset;
         currentDir = reflect(ray.direction, hit.normal);
 
-        if (nRays == 1) {
-            resultColor = hit.planeNormal;
-            break;
-        }
-        else if (nRays == 2) {
-            resultColor = hit.normal;
-            break;
-        }
+        //if (nRays == 1) {
+        //    resultColor = hit.planeNormal;
+        //    break;
+        //}
+        //else if (nRays == 2) {
+        //    resultColor = hit.normal;
+        //    break;
+        //}
         //Light rays
         for (int lightIndex = 0; lightIndex < u_nPointLights; ++lightIndex) {
             vec3 lightPos = u_pointLightsPos[lightIndex];
@@ -382,9 +385,10 @@ void main() {
 
             currentColorPower *= currentColorPower;
         }
-        if (nRays > 2)
-            break;
+        //if (nRays > 2)
+        //    break;
     }
-    //color = vec4(resultColor/(rayIndex + 1), 1);
-    color = vec4(resultColor/(rayIndex + 1), 1);
+    vec3 currColor = resultColor / (rayIndex + 1);
+    vec3 prevColor = texture(u_previousTexture, fragCoord.xy).xyz;
+    color = vec4(mix(prevColor, currColor, u_samplePart), 1);
 }

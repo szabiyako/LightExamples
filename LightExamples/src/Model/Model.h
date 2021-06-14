@@ -13,11 +13,11 @@ public:
 	enum class RenderType
 	{
 		DEFAULT,
-		GOURAUD,
-		PHONG,
+		//GOURAUD,
+		//PHONG,
 		BLINN_PHONG,
-		PBR,
-		RAYTRACING
+		//PBR,
+		//RAYTRACING
 	};
 
 	Model(

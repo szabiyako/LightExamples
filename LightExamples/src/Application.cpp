@@ -16,17 +16,11 @@ void Application::processChanges()
 		glfwSwapInterval(m_enableVSync);
 	}
 	m_lastEnableVSync = m_enableVSync;
-	if ((m_renderingType == RenderingType::RAYTRACING)
-		&& !m_isBVHvalid) {
-		m_isBVHvalid = true;
-		//Create BVH
-		if (m_bvh != nullptr)
-			delete m_bvh;
-		m_bvh = new BVH::BVHBuilder();
-		Utils::fillBVH(*m_vertexTexture, *m_normalTexture, *m_bvhTexture, *m_bvh, m_models);
+	if (m_renderingType == RenderingType::RAYTRACING) {
+		m_rayTracer->updateData(m_models);
 	}
-	if (m_renderingType != RenderingType::RAYTRACING)
-		m_isBVHvalid = false;
+	else
+		m_rayTracer->setInvalid();
 
 }
 
@@ -37,6 +31,7 @@ void Application::window_size_callback(GLFWwindow * window, int width, int heigh
 		return;
 	m_camera.setAspectRatio((float)width / (float)height);
 	m_ui->setWindowSize(width, height);
+	m_rayTracer->setWindowSize(width, height);
 	glViewport(0, 0, width, height);
 }
 
@@ -232,14 +227,16 @@ Application::Application()
 	glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
 	m_skyboxCubeMap = new Texture::CubeMap();
-	m_bvhTexture = new Texture::VertexTexture();
-	m_vertexTexture = new Texture::VertexTexture();
-	m_uvTexture = new Texture::VertexTexture();
-	m_normalTexture = new Texture::VertexTexture();
+	GLCall(true);
+	m_rayTracer = new RayTracer();
+
+	int width, height;
+	glfwGetWindowSize(m_window, &width, &height);
+	m_rayTracer->setWindowSize(width, height);
 
 	UI::DebugMenuDataRef debugMenuDataRef(m_enableFPScounter,m_enableCursor);
 	UI::CameraMenuDataRef cameraMenuDataRef(m_camera, m_cameraSpeed, m_cameraSensitivity);
-	UI::RenderingMenuDataRef renderingMenuDataRef(m_renderingType, m_nRaysMax, m_skyboxImages, *m_skyboxCubeMap, m_enableVSync, m_enableSSAO);
+	UI::RenderingMenuDataRef renderingMenuDataRef(m_renderingType, *m_rayTracer, m_skyboxImages, *m_skyboxCubeMap, m_enableVSync, m_enableSSAO);
 	UI::ObjectsMenuDataRef objectsMenuDataRef(m_models, m_lightSources, *m_skyboxCubeMap);
 	UI::LightsMenuDataRef lightsMenuDataRef(m_lightSources);
 	UI::DataRef dataRef(
@@ -257,16 +254,7 @@ Application::~Application()
 {
 	delete m_ui;
 	delete m_skyboxCubeMap;
-	if (m_bvh != nullptr)
-		delete m_bvh;
-	if (m_bvhTexture != nullptr)
-		delete m_bvhTexture;
-	if (m_vertexTexture != nullptr)
-		delete m_vertexTexture;
-	if (m_uvTexture != nullptr)
-		delete m_uvTexture;
-	if (m_normalTexture != nullptr)
-		delete m_normalTexture;
+	delete m_rayTracer;
 	const size_t nModels = m_models.size();
 	for (size_t modelIndex = 0; modelIndex < nModels; ++modelIndex) {
 		m_models[modelIndex].deleteDrawable();
@@ -429,40 +417,10 @@ void Application::run()
 					Renderer::draw(m_models[i].getDrawable(), m_models[i].getModelMatrix(), m_camera.getView(), m_camera.getProj());
 				glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
 
-				rtva.bind();
-				rtShader.bind();
-				rtShader.setUniform1i("texPosition", 0);
-				rtShader.setUniform1i("texNode", 1);
-				rtShader.setUniform1i("u_skybox", 2);
-				rtShader.setUniform1i("u_normalTexture", 3);
-				rtShader.setUniformMatrix3f("viewToWorld", glm::transpose(m_camera.getView()));
-				rtShader.setUniformVec3f("location", m_camera.getPos());
-				rtShader.setUniform1f("u_fov", m_camera.getFOV());
-				int width, height;
-				glfwGetWindowSize(m_window, &width, &height);
-				rtShader.setUniformVec2f("screeResolution", glm::vec2(width, height));
-				rtShader.setUniform1i("bvhWidth", m_bvhTexture->getWidth());
-				rtShader.setUniform1i("texPosWidth", m_vertexTexture->getWidth());
-
-				//setupLight
-				std::vector<glm::vec3> lightPos;
-				lightPos.reserve(32);
-				for (size_t i = 0; i < nLightSources; ++i) {
-					if (m_lightSources[i].isEnabled())
-						lightPos.push_back(m_lightSources[i].getPos());
-				}
-				rtShader.setUniform1i("u_nPointLights", lightPos.size());
-				rtShader.setUniformVec3fArray("u_pointLightsPos", lightPos, 32);
-				rtShader.setUniform1i("u_nRaysMax", m_nRaysMax);
-
-				m_vertexTexture->bind(0);
-				m_bvhTexture->bind(1);
-				m_skyboxCubeMap->bind(2);
-				m_normalTexture->bind(3);
-				// Draw
-				glDisable(GL_DEPTH_TEST);
-				glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-				glEnable(GL_DEPTH_TEST);
+				m_rayTracer->draw(
+					m_camera,
+					m_lightSources,
+					*m_skyboxCubeMap);
 
 				for (size_t i = 0; i < nLightSources; ++i)
 					Renderer::draw(m_lightSources[i].getDrawable(), m_lightSources[i].getModelMatrix(), m_camera.getView(), m_camera.getProj());

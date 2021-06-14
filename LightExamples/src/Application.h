@@ -34,8 +34,7 @@
 #include "Model/Model.h"
 #include "LightSrc/LightSrc.h"
 
-#include "RayTracing/BVHBuilder.h"
-#include "OpenGL/Texture/VertexTexture/VertexTexture.h"
+#include "RayTracing/RayTracer.h"
 
 class Application
 {
@@ -49,11 +48,7 @@ class Application
 	bool m_enableKeysInput = true;
 
 	// RayTracing Data
-	BVH::BVHBuilder* m_bvh = nullptr;
-	Texture::VertexTexture *m_bvhTexture = nullptr;
-	Texture::VertexTexture *m_vertexTexture = nullptr;
-	Texture::VertexTexture *m_uvTexture = nullptr;
-	Texture::VertexTexture* m_normalTexture = nullptr;
+	RayTracer *m_rayTracer = nullptr;
 
 	// DebugMenuData
 	bool m_enableFPScounter = true;
@@ -66,14 +61,12 @@ class Application
 
 	// RenderingMenuData
 	RenderingType m_renderingType = RenderingType::DEFAULT;
-	int m_nRaysMax = 1;
 	std::vector<Image> m_skyboxImages;
 	Texture::CubeMap *m_skyboxCubeMap = nullptr;
 	bool m_enableVSync = false;
 	bool m_enableSSAO = false;
 
 	bool m_lastEnableVSync = false;
-	bool m_isBVHvalid = false;
 
 	// ObjectsMenuData
 	std::vector<Model> m_models;
