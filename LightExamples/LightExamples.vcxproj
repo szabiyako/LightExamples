@@ -163,6 +163,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\UI\Elements\Utils\RayTracingProgressBar.cpp" />
     <ClCompile Include="src\OpenGL\FrameBuffer.cpp" />
     <ClCompile Include="src\RayTracing\RayTracer.cpp" />
     <ClCompile Include="src\LoadableData\ObjData\Tools\Data.cpp" />
@@ -236,12 +237,14 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="res\shaders\Default.shader" />
-    <None Include="res\shaders\RayTracing.shader" />
+    <None Include="res\shaders\GroundTruthRayTracing.shader" />
     <None Include="res\shaders\Screen.shader" />
     <None Include="res\shaders\Skybox.shader" />
+    <None Include="res\shaders\SmartRayTracing.shader" />
     <None Include="res\shaders\TextureTestShader.shader" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\UI\Elements\Utils\RayTracingProgressBar.h" />
     <ClInclude Include="src\OpenGL\FrameBuffer.h" />
     <ClInclude Include="src\RayTracing\RayTracer.h" />
     <ClInclude Include="src\LoadableData\ObjData\Tools\Data.h" />

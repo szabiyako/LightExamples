@@ -7,6 +7,7 @@
 //ElementsStatic
 #include "Elements/Utils/FPSCounter.h"
 #include "Elements/Utils/SimpleCursor.h"
+#include "Elements/Utils/RayTracingProgressBar.h"
 
 //Elements
 #include "Elements/MainMenu.h"
@@ -98,4 +99,5 @@ void UI::UI::initElementsStatic(const DataRef& dataRef)
 {
 	m_elementsStatic.push_back(new FPSCounter(dataRef.debugMenuDataRef.enableFPScounter));
 	m_elementsStatic.push_back(new SimpleCursor(dataRef.debugMenuDataRef.enableCursor));
+	m_elementsStatic.push_back(new RayTracingProgressBar(dataRef.renderingMenuDataRef.rayTracer, dataRef.renderingMenuDataRef.renderingType));
 }

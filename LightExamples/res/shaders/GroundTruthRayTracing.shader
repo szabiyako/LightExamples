@@ -31,7 +31,7 @@ in vec2 fragCoord;
 layout(location = 0) out vec4 color;
 
 uniform vec3 location;
-uniform vec2 screeResolution;
+uniform vec2 screenResolution;
 uniform mat3 viewToWorld;
 uniform sampler2D texPosition;
 uniform sampler2D texNode;
@@ -48,6 +48,10 @@ uniform int u_nPointLights;
 uniform int u_nRaysMax;
 uniform float u_samplePart;
 
+uniform vec2 u_seed1;
+uniform vec2 u_seed2;
+
+uvec4 R_STATE;
 
 //------------------- STRUCT AND LOADER BEGIN -----------------------
 struct Triangle
@@ -292,9 +296,107 @@ mat3 rotationMatrix(vec3 axis, float angle)
                oc * axis.z * axis.x - axis.y * s,  oc * axis.y * axis.z + axis.x * s,  oc * axis.z * axis.z + c);
 }
 
+uint TausStep(uint z, int S1, int S2, int S3, uint M)
+{
+    uint b = (((z << S1) ^ z) >> S2);
+    return (((z & M) << S3) ^ b);
+}
+
+uint LCGStep(uint z, uint A, uint C)
+{
+    return (A * z + C);
+}
+
+vec2 hash22(vec2 p)
+{
+    p += u_seed1.x;
+    vec3 p3 = fract(vec3(p.xyx) * vec3(.1031, .1030, .0973));
+    p3 += dot(p3, p3.yzx + 33.33);
+    return fract((p3.xx + p3.yz) * p3.zy);
+}
+
+float random()
+{
+    R_STATE.x = TausStep(R_STATE.x, 13, 19, 12, uint(4294967294));
+    R_STATE.y = TausStep(R_STATE.y, 2, 25, 4, uint(4294967288));
+    R_STATE.z = TausStep(R_STATE.z, 3, 11, 17, uint(4294967280));
+    R_STATE.w = LCGStep(R_STATE.w, uint(1664525), uint(1013904223));
+    return 2.3283064365387e-10 * float((R_STATE.x ^ R_STATE.y ^ R_STATE.z ^ R_STATE.w));
+}
+
+vec3 randomOnSphere() {
+    vec3 rand = vec3(random(), random(), random());
+    float theta = rand.x * 2.0 * 3.14159265;
+    float v = rand.y;
+    float phi = acos(2.0 * v - 1.0);
+    float r = pow(rand.z, 1.0 / 3.0);
+    float x = r * sin(phi) * cos(theta);
+    float y = r * sin(phi) * sin(theta);
+    float z = r * cos(phi);
+    return vec3(x, y, z);
+}
+/*
+bool intersectLightSrc(Ray ray, vec3 lightPos, float radius)
+{
+    return false;
+    float cx = lightPos.x;
+    float cy = lightPos.y;
+    float cz = lightPos.z;
+
+    float px = ray.origin.x * 1000;
+    float py = ray.origin.y * 1000;
+    float pz = ray.origin.z * 1000;
+
+    float vx = ray.direction.x * ray.tEnd;
+    float vy = ray.direction.y * ray.tEnd;
+    float vz = ray.direction.z * ray.tEnd;
+
+    float A = vx * vx + vy * vy + vz * vz;
+    float B = 2.0 * (px * vx + py * vy + pz * vz - vx * cx - vy * cy - vz * cz);
+    float C = px * px - 2 * px * cx + cx * cx + py * py - 2 * py * cy + cy * cy +
+        pz * pz - 2 * pz * cz + cz * cz - radius * radius;
+
+    // discriminant
+    float D = B * B - 4 * A * C;
+
+    float t1 = (-B - sqrt(D)) / (2.0 * A);
+    float t2 = (-B + sqrt(D)) / (2.0 * A);
+
+    if (D < 0)
+        return false;
+    return true;
+    //else if ((t1 > 1 || t1 < 0) && (t2 > 1 || t2 < 0))
+    //    return false;
+    //return true;
+}
+*/
+
+bool intersectLightSrc(Ray ray, vec3 lightPos, float radius)
+{
+    vec3 ro = ray.origin - lightPos;
+    vec3 rd = ray.direction;
+    float b = dot(ro, rd);
+    float c = dot(ro, ro) - radius * radius;
+    float h = b * b - c;
+    if (h < 0.0)
+        return false;
+    return true;
+}
+
+//bool intersectLightSrc(Ray ray, vec3 lightPos, float radius)
+//{
+//    return dot(ray.direction, normalize(lightPos - ray.origin)) > 0.995;
+//}
+
 void main() {
-    vec3 viewDir = normalize(vec3((gl_FragCoord.xy * 2 - screeResolution.xy) * tan(radians(u_fov)/2) / screeResolution.y, -1.0));
+    vec3 viewDir = normalize(vec3((gl_FragCoord.xy * 2 - screenResolution.xy) * tan(radians(u_fov)/2) / screenResolution.y, -1.0));
     vec3 worldDir = viewToWorld * viewDir;
+
+    vec2 uvRes = hash22(fragCoord + 1.0) * screenResolution + screenResolution;
+    R_STATE.x = uint(u_seed1.x + uvRes.x);
+    R_STATE.y = uint(u_seed1.y + uvRes.x);
+    R_STATE.z = uint(u_seed2.x + uvRes.y);
+    R_STATE.w = uint(u_seed2.y + uvRes.y);
 
     int nRays = u_nRaysMax;
 
@@ -303,7 +405,8 @@ void main() {
     const vec3 baseColor = vec3(1, 1, 1);
     //const vec3 lightPos = vec3(-50, 100, 5);
 
-    float currentColorPower = 0.9;
+    float currentLightPower = 1;
+    float lightKoeff = 0.7;
     vec3 currentPos = location;
     vec3 currentDir = worldDir;
 
@@ -323,57 +426,67 @@ void main() {
         traceCloseHitV2(ray, hit);
 
         if (!hit.isHit) {
-            vec3 skyBoxPos = vec3(ray.direction.x, -ray.direction.y, ray.direction.z);
-            if (rayIndex == 0) {
-                color = texture(u_skybox, skyBoxPos);
-                return;
-            }
-            else {
-                resultColor += currentColorPower * vec3(texture(u_skybox, skyBoxPos));
+            bool hitLight = false;
+            if (rayIndex != 0)
+                for (int lightIndex = 0; lightIndex < u_nPointLights; ++lightIndex) {
+                    vec3 lightPos = u_pointLightsPos[lightIndex];
+
+                    if (intersectLightSrc(ray, lightPos, 0.558)) {
+                        float lightSrcPower = 100;
+                        resultColor += currentLightPower * vec3(1, 1, 1) * lightSrcPower;
+                        hitLight = true;
+                        break;
+                    }
+                }
+            if (hitLight)
                 break;
-            }
+
+            vec3 skyBoxPos = vec3(ray.direction.x, -ray.direction.y, ray.direction.z);
+            resultColor += currentLightPower * vec3(texture(u_skybox, skyBoxPos));
+            break;
         }
         currentPos = hit.position + hit.planeNormal * offset;
-        currentDir = reflect(ray.direction, hit.normal);
+        vec3 r = randomOnSphere();
+        vec3 dir = normalize(r * dot(r, hit.normal));
+        currentDir = normalize(reflect(ray.direction, hit.normal) * 0 + dir);
 
-        //if (nRays == 1) {
-        //    resultColor = hit.planeNormal;
-        //    break;
-        //}
-        //else if (nRays == 2) {
-        //    resultColor = hit.normal;
-        //    break;
-        //}
+        /*
         //Light rays
         for (int lightIndex = 0; lightIndex < u_nPointLights; ++lightIndex) {
             vec3 lightPos = u_pointLightsPos[lightIndex];
-
+            
             Ray lightRay;
             lightRay.direction = normalize(lightPos - hit.position);
             lightRay.origin = currentPos;
             lightRay.tStart = 0.000001;
             lightRay.tEnd = length(lightPos - hit.position);
-
+            
             float dotProduct = dot(hit.normal, lightRay.direction);
             float colorKoeff = (dotProduct + 1.0) / 2.0;
             //resultColor += currentColorPower * colorKoeff * baseColor;
             //currentColorPower *= currentColorPower;
-
+            
             //if (dotProduct < 0)
             //    continue;
-
+            
             Hit lightHit;
             traceCloseHitV2(lightRay, lightHit);
-
+            
             if (lightHit.isHit) {
                 //resultColor +=  currentColorPower * (1 - colorKoeff) * baseColor;
                 //resultColor -=  currentColorPower * colorKoeff * baseColor;
-                resultColor = baseColor * 0.1;
+                //resultColor = baseColor * 0.1;
+                // 
+                //resultColor = baseColor * 0.9;
+                resultColor = mix(resultColor, baseColor * 0.5, 1.0 / (lightIndex + 1)); ;
             }
             else {
                 //resultColor += currentColorPower * colorKoeff * baseColor;
                 //resultColor += baseColor;
-                resultColor = baseColor;
+
+                //resultColor = baseColor;
+                resultColor = resultColor = mix(resultColor, baseColor, 1.0 / (lightIndex + 1));
+
             }
             //resultColor = hit.planeNormal;
             //resultColor += currentColorPower * colorKoeff * baseColor;
@@ -382,13 +495,12 @@ void main() {
             //        resultColor -= 0.05 * baseColor;
             //    else
             //        resultColor -= 0.2 * baseColor;
-
-            currentColorPower *= currentColorPower;
+            
         }
-        //if (nRays > 2)
-        //    break;
+        */
+        currentLightPower *= lightKoeff;
     }
-    vec3 currColor = resultColor / (rayIndex + 1);
+    vec3 currColor = resultColor;// / (rayIndex + 1);
     vec3 prevColor = texture(u_previousTexture, fragCoord.xy).xyz;
     color = vec4(mix(prevColor, currColor, u_samplePart), 1);
 }

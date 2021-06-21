@@ -26,7 +26,7 @@ void UI::RenderingMenu::process(const int windowWidth, const int windowHeight, b
 		return;
 
 	ImGui::SetNextWindowPos(ImVec2(0, 260), ImGuiCond_Once);
-	ImGui::SetNextWindowSize(ImVec2(240, 342), ImGuiCond_Always);
+	ImGui::SetNextWindowSize(ImVec2(320, 342), ImGuiCond_Always);
 	ImGui::Begin("Rendering", &m_isOpen, m_windowFlags);
 	
 	ImGui::Text("Rendering type");
@@ -43,14 +43,23 @@ void UI::RenderingMenu::process(const int windowWidth, const int windowHeight, b
 	}
 
 	if (m_dataRef.renderingType == RenderingType::RAYTRACING) {
-		ImGui::DragInt("Max rays", &m_dataRef.rayTracer.getMaxRaysRef(), 1.0f, 1, 40);
-		if (m_dataRef.rayTracer.getMaxRaysRef() < 1)
-			m_dataRef.rayTracer.getMaxRaysRef() = 1;
-		else if (m_dataRef.rayTracer.getMaxRaysRef() > 40)
-			m_dataRef.rayTracer.getMaxRaysRef() = 40;
+		int reflections = m_dataRef.rayTracer.getMaxRays();
+		ImGui::DragInt("Reflections", &reflections, 1.0f, 1, 40);
+		if (reflections < 1)
+			reflections = 1;
+		else if (reflections > 40)
+			reflections = 40;
+		m_dataRef.rayTracer.setMaxRays(reflections);
 		float scale = m_dataRef.rayTracer.getResolutionScale();
-		ImGui::DragFloat("Scale", &scale, 0.01f, 0.1f, 1.f);
+		ImGui::DragFloat("Scale", &scale, 0.01f, 0.1f, 2.f);
 		m_dataRef.rayTracer.setResolutionScale(scale);
+		bool interpolate = m_dataRef.rayTracer.getInterpolateTextures();
+		ImGui::Checkbox("Interpolate", &interpolate);
+		m_dataRef.rayTracer.setInterpolateTextures(interpolate);
+		int maxFrames = m_dataRef.rayTracer.getMaxFrames();
+		ImGui::DragInt("Rays per pixel", &maxFrames, 1.f, 2, 50000);
+		if (maxFrames > 1)
+			m_dataRef.rayTracer.setMaxFrames(maxFrames);
 		ImGui::NewLine();
 	}
 	if (ImGui::CollapsingHeader("Background")) {
