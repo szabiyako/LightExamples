@@ -44,6 +44,7 @@ uniform sampler2D u_previousTexture;
 uniform float u_fov;
 
 uniform vec3 u_pointLightsPos[32];
+uniform float u_pointLightsScale[32];
 uniform int u_nPointLights;
 uniform int u_nRaysMax;
 uniform float u_samplePart;
@@ -52,6 +53,8 @@ uniform vec2 u_seed1;
 uniform vec2 u_seed2;
 
 uvec4 R_STATE;
+
+const float PI = 3.14159265359;
 
 //------------------- STRUCT AND LOADER BEGIN -----------------------
 struct Triangle
@@ -401,7 +404,8 @@ void main() {
     int nRays = u_nRaysMax;
 
     //const float offset = 0.0001;
-    const float offset = 0.001;
+    //const float offset = 0.001;
+    const float offset = 0.01;
     const vec3 baseColor = vec3(1, 1, 1);
     //const vec3 lightPos = vec3(-50, 100, 5);
 
@@ -443,7 +447,8 @@ void main() {
                 vec3 lightPos = u_pointLightsPos[lightIndex];
 
                 Ray lightRay;
-                float radius = 0.558;
+                const float baseRadius = 0.558;
+                float radius = baseRadius * u_pointLightsScale[lightIndex];
 
                 vec3 lightPartPos = lightPos + randomOnSphere() * radius;
 
@@ -452,6 +457,8 @@ void main() {
                 lightRay.tStart = 0.000001;
                 lightRay.tEnd = length(lightPartPos - hit.position);
 
+                float lightDistance = length(lightPos - hit.position);
+
                 Hit lightHit;
                 traceCloseHitV2(lightRay, lightHit);
 
@@ -459,15 +466,18 @@ void main() {
                     float dotProduct = dot(hit.normal, lightRay.direction);
                     //float colorKoeff = (dotProduct + 1.0) / 2.0;
                     float colorKoeff = max(dotProduct, 0.0); // HOLY IT WORKS!
-                    float lightSrcPower = 0.4 * colorKoeff;
+                    float lightSrcPower = 0.4;
+                    float koeff = lightSrcPower * colorKoeff;
+                    bool test = false;
+                    if (test) {
+                        if (dotProduct > 0) {
+                            float koeff2 = lightSrcPower * ((atan(radius / lightDistance)) / PI) * 10;
 
-                    resultColor += currentLightPower * vec3(1, 1, 1) * lightSrcPower;
-
-                    //resultColor = colorKoeff * vec3(1, 1, 1);
-                    //vec3 currColor = resultColor;// / (rayIndex + 1);
-                    //vec3 prevColor = texture(u_previousTexture, fragCoord.xy).xyz;
-                    //color = vec4(mix(prevColor, currColor, u_samplePart), 1);
-                    //return;
+                            resultColor += currentLightPower * vec3(1, 1, 1) * koeff2;
+                        }
+                    }
+                    else
+                        resultColor += currentLightPower * vec3(1, 1, 1) * koeff;
                 }            
                 //else {
                 //    float dotProduct = dot(hit.normal, lightRay.direction);

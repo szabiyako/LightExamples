@@ -37,6 +37,7 @@ void Utils::loadModelsToTexture(
 		const bool hasNormals = (objData.indices.normals.size() == objData.indices.polygons.size());
 		std::vector<float> triangleNormalCoords;
 		if (hasNormals) {
+			// TODO ROTATE NORMALS USING MODEL MATRIX
 			const std::vector<glm::vec3> normals = objData.data.normals;
 			const std::vector<int> normalsIndices = objData.indices.normals;
 			const std::vector<int> triangleNormalIndices = ObjDataTools::Data::buildTriangleVertexIndices(normalsIndices, objData.indices.polygonsStarts);

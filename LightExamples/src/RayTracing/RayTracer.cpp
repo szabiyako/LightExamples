@@ -71,6 +71,10 @@ void RayTracer::draw(
 void RayTracer::updateData(std::vector<Model>& models)
 {
 	if (!m_isBVHvalid) {
+		if (models.empty())
+			return;
+		if (models[0].getLoadableDataRef().objData.getPolygonsCount() == 0)
+			return;
 		m_isBVHvalid = true;
 		//Create BVH
 		if (m_bvh != nullptr)
@@ -221,13 +225,19 @@ void RayTracer::drawFrame(
 	const size_t nLightSources = lightSources.size();
 	//setupLight
 	std::vector<glm::vec3> lightPos;
+	std::vector<float> lightScale;
 	lightPos.reserve(32);
+	lightScale.reserve(32);
 	for (size_t i = 0; i < nLightSources; ++i) {
-		if (lightSources[i].isEnabled())
+		if (lightSources[i].isEnabled()) {
 			lightPos.push_back(lightSources[i].getPos());
+			lightScale.push_back(lightSources[i].getScale());
+		}
 	}
 	shader.setUniform1i("u_nPointLights", lightPos.size());
 	shader.setUniformVec3fArray("u_pointLightsPos", lightPos, 32);
+	shader.setUniform1fArray("u_pointLightsScale", lightScale, 32);
+
 	shader.setUniform1i("u_nRaysMax", m_nRaysMax);
 	shader.setUniform1f("u_samplePart", 1.f / m_currentFrame);
 	Console::print(std::string("Sample part: ") + std::to_string(1.f / m_currentFrame) + "; Frame: " + std::to_string(m_currentFrame) + "\n");

@@ -143,6 +143,11 @@ glm::vec3 LightSrc::getPos() const
 	return m_position;
 }
 
+float LightSrc::getScale() const
+{
+	return m_scale;
+}
+
 glm::vec3 LightSrc::getDir() const
 {
 	return m_dir;

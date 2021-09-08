@@ -27,7 +27,8 @@ void UI::LightsMenu::process(const int windowWidth, const int windowHeight, bool
 
 		m_lightMenus[objIndex].setDataPtrs(
 			&isOpen,
-			lightSrc);
+			lightSrc,
+			&m_dataRef.resetFrames);
 		m_lightMenus[objIndex].process(windowWidth, windowHeight, enableKeysInput);
 		m_showObjectMenu[objIndex] = isOpen;
 	}

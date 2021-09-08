@@ -79,6 +79,10 @@ void UI::LightMenu::process(const int windowWidth, const int windowHeight, bool&
 			float color[3] = { modelColor.x, modelColor.y, modelColor.z };
 			ImGui::ColorEdit3("Color", color);
 
+			//TODO checks only if raytracing and replace to *m_resetFrames = ImGui::Something return value
+			if (m_lightSrc->isVisible() != isVisible)
+				*m_resetFrames = true;
+
 			m_lightSrc->setVisible(isVisible);
 			m_lightSrc->setModelColor(glm::vec3(color[0], color[1], color[2]));
 
@@ -87,16 +91,16 @@ void UI::LightMenu::process(const int windowWidth, const int windowHeight, bool&
 		{
 			ImGui::Text("Position");
 			glm::vec3 &position = m_lightSrc->getPosRef();
-			ImGui::DragFloat("x##pos", &position.x, 0.05f);
-			ImGui::DragFloat("y##pos", &position.y, 0.05f);
-			ImGui::DragFloat("z##pos", &position.z, 0.05f);
+			*m_resetFrames = *m_resetFrames + ImGui::DragFloat("x##pos", &position.x, 0.05f);
+			*m_resetFrames = *m_resetFrames + ImGui::DragFloat("y##pos", &position.y, 0.05f);
+			*m_resetFrames = *m_resetFrames + ImGui::DragFloat("z##pos", &position.z, 0.05f);
 			glm::vec3 &rotations = m_lightSrc->getRotationRef();
 			ImGui::Text("Rotation");
-			ImGui::DragFloat("x##rot", &rotations.x, 0.5f);
-			ImGui::DragFloat("y##rot", &rotations.y, 0.5f);
-			ImGui::DragFloat("z##rot", &rotations.z, 0.5f);
+			*m_resetFrames = *m_resetFrames + ImGui::DragFloat("x##rot", &rotations.x, 0.5f);
+			*m_resetFrames = *m_resetFrames + ImGui::DragFloat("y##rot", &rotations.y, 0.5f);
+			*m_resetFrames = *m_resetFrames + ImGui::DragFloat("z##rot", &rotations.z, 0.5f);
 			float &scale = m_lightSrc->getScaleRef();
-			ImGui::DragFloat("scale", &scale, 0.05f);
+			*m_resetFrames = *m_resetFrames + ImGui::DragFloat("scale", &scale, 0.05f);
 			if (rotations.x > 180)
 				rotations.x -= 360;
 			else if (rotations.x < -180)
@@ -115,6 +119,7 @@ void UI::LightMenu::process(const int windowWidth, const int windowHeight, bool&
 				position = { 0.f, 0.f, 0.f };
 				rotations = { 0.f, 0.f, 0.f };
 				scale = 1.f;
+				*m_resetFrames = true;
 			}
 
 			m_lightSrc->updateModelMatrix();
@@ -132,6 +137,12 @@ void UI::LightMenu::process(const int windowWidth, const int windowHeight, bool&
 			bool isShadowsEnabled = m_lightSrc->isShadowsEnabled();
 			ImGui::Checkbox("Enable shadows", &isShadowsEnabled);
 
+			if ((m_lightSrc->isEnabled() != isEnabled)
+				|| (lightColor.x != color[0])
+				|| (lightColor.y != color[1])
+				|| (lightColor.z != color[2]))
+				*m_resetFrames = true;
+
 			m_lightSrc->setEnabled(isEnabled);
 			m_lightSrc->setLightColor(glm::vec3(color[0], color[1], color[2]));
 			m_lightSrc->setShadowsEnabled(isShadowsEnabled);
@@ -142,16 +153,19 @@ void UI::LightMenu::process(const int windowWidth, const int windowHeight, bool&
 
 void UI::LightMenu::setDataPtrs(
 	bool* isOpen,
-	LightSrc* lightSrc)
+	LightSrc* lightSrc,
+	bool* resetFrames)
 {
 	m_isOpen = isOpen;
 	m_lightSrc = lightSrc;
+	m_resetFrames = resetFrames;
 }
 
 bool UI::LightMenu::isDataPtrsSetup() const
 {
 	return (m_isOpen != nullptr)
-		&& (m_lightSrc != nullptr);
+		&& (m_lightSrc != nullptr)
+		&& (m_resetFrames != nullptr);
 }
 
 std::string UI::LightMenu::getUniqueName() const

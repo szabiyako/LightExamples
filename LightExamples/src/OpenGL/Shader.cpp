@@ -132,6 +132,13 @@ void Shader::setUniform1f(const std::string & name, float value)
 	GLCall(glUniform1f(getUniformLocation(name), value));
 }
 
+void Shader::setUniform1fArray(const std::string& name, const std::vector<float>& vector, const int size)
+{
+	std::vector<float> vecCopy = vector;
+	vecCopy.resize(size, 0.f);
+	GLCall(glUniform1fv(getUniformLocation(name), size, vecCopy.data()));
+}
+
 
 void Shader::setUniform4f(const std::string & name, float v0, float v1, float v2, float v3)
 {

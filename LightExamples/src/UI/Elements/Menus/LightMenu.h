@@ -13,7 +13,8 @@ public:
 	void process(const int windowWidth, const int windowHeight, bool &enableKeysInput) override;
 	void setDataPtrs(
 		bool *isOpen,
-		LightSrc* lightSrc);
+		LightSrc* lightSrc,
+		bool *resetFrames);
 	bool isDataPtrsSetup() const;
 
 	std::string getUniqueName() const;
@@ -33,5 +34,6 @@ private:
 	ImVec2 m_windowPos;
 
 	LightSrc *m_lightSrc = nullptr;
+	bool *m_resetFrames = nullptr;
 };
 }

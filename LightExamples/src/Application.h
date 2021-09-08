@@ -49,6 +49,8 @@ class Application
 
 	// RayTracing Data
 	RayTracer *m_rayTracer = nullptr;
+	bool m_rayTracerResetFrames = false;
+	bool m_rayTracerNeedsUpdateBVH = false;
 
 	// DebugMenuData
 	bool m_enableFPScounter = true;

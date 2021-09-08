@@ -39,6 +39,7 @@ public:
 	void updateDirection();
 
 	glm::vec3 getPos() const;
+	float getScale() const;
 	glm::vec3 getDir() const;
 
 	glm::vec3 getLightColor() const;

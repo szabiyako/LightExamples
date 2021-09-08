@@ -30,9 +30,12 @@ public:
 	//Set uniforms
 	void setUniform1i(const std::string& name, int value);
 	void setUniform1f(const std::string& name, float value);
+	void setUniform1fArray(const std::string& name, const std::vector<float> &vector, const int size);
 	void setUniform4f(const std::string& name, float v0, float v1, float v2, float v3);
 	void setUniformVec2f(const std::string& name, glm::vec2 vec);
 	void setUniformVec3f(const std::string& name, glm::vec3 vec);
+
+	// TODO: REWRITE METHOD MORE EFFICIENT
 	void setUniformVec3fArray(const std::string& name, std::vector<glm::vec3> vecArray, const int size);
 	void setUniformVec4f(const std::string& name, glm::vec4 vec);
 	void setUniformMatrix3f(const std::string& name, glm::mat3 mat3);

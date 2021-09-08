@@ -17,6 +17,15 @@ void Application::processChanges()
 	}
 	m_lastEnableVSync = m_enableVSync;
 	if (m_renderingType == RenderingType::RAYTRACING) {
+		if (m_rayTracerResetFrames) {
+			m_rayTracerResetFrames = false;
+			m_rayTracer->resetFrames();
+		}
+		if (m_rayTracerNeedsUpdateBVH) {
+			m_rayTracerNeedsUpdateBVH = false;
+			m_rayTracer->setInvalid();
+		}
+
 		m_rayTracer->updateData(m_models);
 	}
 	else
@@ -238,7 +247,7 @@ Application::Application()
 	UI::CameraMenuDataRef cameraMenuDataRef(m_camera, m_cameraSpeed, m_cameraSensitivity);
 	UI::RenderingMenuDataRef renderingMenuDataRef(m_renderingType, *m_rayTracer, m_skyboxImages, *m_skyboxCubeMap, m_enableVSync, m_enableSSAO);
 	UI::ObjectsMenuDataRef objectsMenuDataRef(m_models, m_lightSources, *m_skyboxCubeMap);
-	UI::LightsMenuDataRef lightsMenuDataRef(m_lightSources);
+	UI::LightsMenuDataRef lightsMenuDataRef(m_lightSources, m_rayTracerResetFrames);
 	UI::DataRef dataRef(
 		m_enableKeysInput,
 		debugMenuDataRef,
