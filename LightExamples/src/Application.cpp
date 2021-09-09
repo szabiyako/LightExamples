@@ -246,7 +246,7 @@ Application::Application()
 	UI::DebugMenuDataRef debugMenuDataRef(m_enableFPScounter,m_enableCursor);
 	UI::CameraMenuDataRef cameraMenuDataRef(m_camera, m_cameraSpeed, m_cameraSensitivity);
 	UI::RenderingMenuDataRef renderingMenuDataRef(m_renderingType, *m_rayTracer, m_skyboxImages, *m_skyboxCubeMap, m_enableVSync, m_enableSSAO);
-	UI::ObjectsMenuDataRef objectsMenuDataRef(m_models, m_lightSources, *m_skyboxCubeMap);
+	UI::ObjectsMenuDataRef objectsMenuDataRef(m_models, m_lightSources, *m_skyboxCubeMap, m_rayTracerNeedsUpdateBVH);
 	UI::LightsMenuDataRef lightsMenuDataRef(m_lightSources, m_rayTracerResetFrames);
 	UI::DataRef dataRef(
 		m_enableKeysInput,

@@ -27,7 +27,8 @@ void UI::ObjectsMenu::process(const int windowWidth, const int windowHeight, boo
 
 		m_objectMenus[objIndex].setDataPtrs(
 			&isOpen,
-			model);
+			model,
+			&m_dataRef.rayTracerNeedsUpdateBVH);
 		m_objectMenus[objIndex].process(windowWidth, windowHeight, enableKeysInput);
 		m_showObjectMenu[objIndex] = isOpen;
 	}
@@ -65,6 +66,7 @@ void UI::ObjectsMenu::process(const int windowWidth, const int windowHeight, boo
 		m_objectMenus.erase(m_objectMenus.begin() + indexToDelete);
 		m_dataRef.models[indexToDelete].deleteDrawable();
 		m_dataRef.models.erase(m_dataRef.models.begin() + indexToDelete);
+		m_dataRef.rayTracerNeedsUpdateBVH = true;
 	}
 
 	ImGui::End();

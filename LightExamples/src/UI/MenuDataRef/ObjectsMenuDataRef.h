@@ -11,10 +11,12 @@ struct ObjectsMenuDataRef
 	std::vector<Model> &models;
 	std::vector<LightSrc> &lightSources;
 	Texture::CubeMap &skyboxCubeMap;
+	bool &rayTracerNeedsUpdateBVH;
 
 	ObjectsMenuDataRef(
 		std::vector<Model> &models,
 		std::vector<LightSrc> &lightSources,
-		Texture::CubeMap &skyboxCubeMap);
+		Texture::CubeMap &skyboxCubeMap,
+		bool &rayTracerNeedsUpdateBVH);
 };
 }

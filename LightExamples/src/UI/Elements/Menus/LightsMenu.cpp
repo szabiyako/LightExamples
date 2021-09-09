@@ -49,6 +49,7 @@ void UI::LightsMenu::process(const int windowWidth, const int windowHeight, bool
 		}
 		else
 			m_lightMenus.push_back(LightMenu());
+		m_dataRef.resetFrames = true;
 	}
 	int indexToDelete = -1;
 	for (size_t objIndex = 0; objIndex < nObjects; ++objIndex) {
@@ -66,6 +67,7 @@ void UI::LightsMenu::process(const int windowWidth, const int windowHeight, bool
 		m_lightMenus.erase(m_lightMenus.begin() + indexToDelete);
 		m_dataRef.lightSources[indexToDelete].deleteDrawable();
 		m_dataRef.lightSources.erase(m_dataRef.lightSources.begin() + indexToDelete);
+		m_dataRef.resetFrames = true;
 	}
 
 	ImGui::End();

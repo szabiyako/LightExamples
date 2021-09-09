@@ -91,15 +91,18 @@ void UI::ObjectMenu::process(const int windowWidth, const int windowHeight, bool
 		{
 			ImGui::Text("Position");
 			glm::vec3& position = m_model->getPosRef();
+			const glm::vec3 previousPosition = position;
 			ImGui::DragFloat("x##pos", &position.x, 0.05f);
 			ImGui::DragFloat("y##pos", &position.y, 0.05f);
 			ImGui::DragFloat("z##pos", &position.z, 0.05f);
 			glm::vec3& rotations = m_model->getRotationRef();
+			const glm::vec3 previousRotations = rotations;
 			ImGui::Text("Rotation");
 			ImGui::DragFloat("x##rot", &rotations.x, 0.5f);
 			ImGui::DragFloat("y##rot", &rotations.y, 0.5f);
 			ImGui::DragFloat("z##rot", &rotations.z, 0.5f);
 			float& scale = m_model->getScaleRef();
+			const float previousScale = scale;
 			ImGui::DragFloat("scale", &scale, 0.05f);
 			if (rotations.x > 180)
 				rotations.x -= 360;
@@ -120,6 +123,12 @@ void UI::ObjectMenu::process(const int windowWidth, const int windowHeight, bool
 				rotations = { 0.f, 0.f, 0.f };
 				scale = 1.f;
 			}
+			if ((position != previousPosition)
+				|| (rotations != previousRotations)
+				|| (scale != previousScale))
+				*m_rayTracerNeedsUpdateBVH = true;
+			if (scale < 0.01)
+				scale = 0.01;
 			m_model->updateModelMatrix();
 		}
 	}
@@ -140,6 +149,7 @@ void UI::ObjectMenu::process(const int windowWidth, const int windowHeight, bool
 				Console::print("Failed to load \"" + filePathName + "\"" + errorMessage + '\n');
 			}
 			else {
+				*m_rayTracerNeedsUpdateBVH = true;
 				Console::print("Loaded \"" + filePathName + "\"\n");
 				m_fileName = fileName;
 				if (m_name == "New object")
@@ -163,10 +173,12 @@ void UI::ObjectMenu::process(const int windowWidth, const int windowHeight, bool
 
 void UI::ObjectMenu::setDataPtrs(
 	bool* isOpen,
-	Model* model)
+	Model* model,
+	bool *rayTracerNeedsUpdateBVH)
 {
 	m_isOpen = isOpen;
 	m_model = model;
+	m_rayTracerNeedsUpdateBVH = rayTracerNeedsUpdateBVH;
 }
 
 bool UI::ObjectMenu::isDataPtrsSetup() const

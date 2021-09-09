@@ -13,7 +13,8 @@ public:
 	void process(const int windowWidth, const int windowHeight, bool &enableKeysInput) override;
 	void setDataPtrs(
 		bool *isOpen,
-		Model* model);
+		Model *model,
+		bool *rayTracerNeedsUpdateBVH);
 	bool isDataPtrsSetup() const;
 
 	std::string getUniqueName() const;
@@ -34,6 +35,8 @@ private:
 	bool *m_isOpen = nullptr;
 
 	Model *m_model = nullptr;
+
+	bool* m_rayTracerNeedsUpdateBVH = nullptr;
 };
 }
 

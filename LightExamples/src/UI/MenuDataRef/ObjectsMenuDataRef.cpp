@@ -3,9 +3,11 @@
 UI::ObjectsMenuDataRef::ObjectsMenuDataRef(
 	std::vector<Model> &models,
 	std::vector<LightSrc> &lightSources,
-	Texture::CubeMap &skyboxCubeMap)
+	Texture::CubeMap &skyboxCubeMap,
+	bool &rayTracerNeedsUpdateBVH)
 	: models(models),
 	  lightSources(lightSources),
-	  skyboxCubeMap(skyboxCubeMap)
+	  skyboxCubeMap(skyboxCubeMap),
+	  rayTracerNeedsUpdateBVH(rayTracerNeedsUpdateBVH)
 {
 }

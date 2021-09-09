@@ -71,10 +71,19 @@ void RayTracer::draw(
 void RayTracer::updateData(std::vector<Model>& models)
 {
 	if (!m_isBVHvalid) {
-		if (models.empty())
+		bool clearBVH = models.empty();
+		if (!clearBVH)
+			clearBVH = models[0].getLoadableDataRef().objData.getPolygonsCount() == 0;
+		if (clearBVH) {
+			m_vertexTexture.loadFromData(nullptr, 0, 0);
+			m_normalTexture.loadFromData(nullptr, 0, 0);
+			m_bvhTexture.loadFromData(nullptr, 0, 0);
+			m_isBVHvalid = true;
+			delete m_bvh;
+			m_bvh = nullptr;
+			resetFrames();
 			return;
-		if (models[0].getLoadableDataRef().objData.getPolygonsCount() == 0)
-			return;
+		}
 		m_isBVHvalid = true;
 		//Create BVH
 		if (m_bvh != nullptr)
