@@ -38,6 +38,16 @@ void Utils::loadModelsToTexture(
 		std::vector<float> triangleNormalCoords;
 		if (hasNormals) {
 			// TODO ROTATE NORMALS USING MODEL MATRIX
+			if (transform != glm::mat4(1.f)) {
+				glm::mat4x4 normalMatrix = transform;
+				normalMatrix[3][0] = 0;
+				normalMatrix[3][1] = 0;
+				normalMatrix[3][2] = 0;
+				const size_t nNormals = objData.data.normals.size();
+				for (size_t nIndex = 0; nIndex < nNormals; ++nIndex) {
+					objData.data.normals[nIndex] = glm::normalize(normalMatrix * glm::vec4(objData.data.normals[nIndex], 1));
+				}
+			}
 			const std::vector<glm::vec3> normals = objData.data.normals;
 			const std::vector<int> normalsIndices = objData.indices.normals;
 			const std::vector<int> triangleNormalIndices = ObjDataTools::Data::buildTriangleVertexIndices(normalsIndices, objData.indices.polygonsStarts);

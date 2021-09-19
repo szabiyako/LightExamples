@@ -136,8 +136,10 @@ Triangle getTriangle(int index)
 //------------------- STRUCT AND LOADER END -----------------------
 
 //------------------- STACK BEGIN -----------------------
+const int _stackSize = 20;
+const int _stackLast = _stackSize - 1;
 int countTI = 0;
-int _stack[20];
+int _stack[_stackSize];
 int _index = -1;
 
 void stackClear()
@@ -152,7 +154,7 @@ int stackSize()
 
 void stackPush(in int node)
 {
-    if (_index > 19)
+    if (_index > _stackLast)
         discard;
     _stack[++_index] = node;
 
