@@ -231,6 +231,9 @@ void RayTracer::drawFrame(
 	shader.setUniform1i("bvhWidth", m_bvhTexture.getWidth());
 	shader.setUniform1i("texPosWidth", m_vertexTexture.getWidth());
 
+
+	shader.setUniformVec2f("u_SamplePerPixelOffset", glm::vec2((float)m_distribution(m_randomEngine) - 0.5f, (float)m_distribution(m_randomEngine) - 0.5f));
+
 	const size_t nLightSources = lightSources.size();
 	//setupLight
 	std::vector<glm::vec3> lightPos;

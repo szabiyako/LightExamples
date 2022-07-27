@@ -52,6 +52,8 @@ uniform float u_samplePart;
 uniform vec2 u_seed1;
 uniform vec2 u_seed2;
 
+uniform vec2 u_SamplePerPixelOffset;
+
 uvec4 R_STATE;
 
 const float PI = 3.14159265359;
@@ -394,8 +396,13 @@ bool intersectLightSrc(Ray ray, vec3 lightPos, float radius)
 //}
 
 void main() {
-    vec3 viewDir = normalize(vec3((gl_FragCoord.xy * 2 - screenResolution.xy) * tan(radians(u_fov) / 2) / screenResolution.y, -1.0));
+    vec2 pixelSize = vec2(1 / screenResolution.x, 1 / screenResolution.y);
+    vec2 pixelOffset = pixelSize * u_SamplePerPixelOffset;
+    vec3 viewDir = normalize(vec3((gl_FragCoord.xy * 2 - screenResolution.xy) * tan(radians(u_fov) / 2) / screenResolution.y + pixelOffset, -1.0));
     vec3 worldDir = viewToWorld * viewDir;
+
+    vec3 viewDirPixel = normalize(vec3((gl_FragCoord.xy * 2 - screenResolution.xy) * tan(radians(u_fov) / 2) / screenResolution.y, -1.0));
+    vec3 worldDirPixel = viewToWorld * viewDirPixel;
 
     vec2 uvRes = hash22(fragCoord + 1.0) * screenResolution + screenResolution;
     R_STATE.x = uint(u_seed1.x + uvRes.x);
@@ -432,6 +439,11 @@ void main() {
         traceCloseHitV2(ray, hit);
 
         if (!hit.isHit) {
+            if (rayIndex == 0) {
+                vec3 skyBoxPos = vec3(worldDirPixel.x, -worldDirPixel.y, worldDirPixel.z);
+                resultColor += currentLightPower * vec3(texture(u_skybox, skyBoxPos));
+                break;
+            }
             vec3 skyBoxPos = vec3(ray.direction.x, -ray.direction.y, ray.direction.z);
             resultColor += currentLightPower * vec3(texture(u_skybox, skyBoxPos));
             break;
@@ -439,8 +451,8 @@ void main() {
         currentPos = hit.position + hit.planeNormal * offset;
         vec3 r = randomOnSphere();
         vec3 dir = normalize(r * dot(r, hit.normal));
-        currentDir = normalize(reflect(ray.direction, hit.normal) * 0 + dir);
-        //currentDir = reflect(ray.direction, hit.normal);
+        //currentDir = normalize(reflect(ray.direction, hit.normal) * 0 + dir);
+        currentDir = reflect(ray.direction, hit.normal);
 
         
         //Light rays
